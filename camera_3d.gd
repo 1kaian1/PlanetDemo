@@ -1,6 +1,6 @@
 extends Camera3D
 
-# Zpracování kliknutí
+
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		# Získání kamery a její pozice na obrazovce
