@@ -27,6 +27,8 @@ func _spawn_coin():
 		create_coin()
 		coins_currently_spawned += 1
 		
+	print(coins_currently_spawned)
+		
 func _input(event):
 	
 	if event is InputEventMouseButton and event.pressed:
@@ -87,7 +89,7 @@ func create_coin():
 		add_child(coin_node)
 
 		var coin_sprite = Sprite3D.new()
-		coin_sprite.texture = load("res://coin.png")
+		coin_sprite.texture = load("res://textures/coin.png")
 		coin_sprite.scale = Vector3(2,2,2)
 		coin_node.look_at(Vector3.ZERO, Vector3.UP)
 		coin_node.add_child(coin_sprite)

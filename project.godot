@@ -14,7 +14,7 @@ config/name="planet_demo"
 run/main_scene="uid://ec35w7lhfdf2"
 config/features=PackedStringArray("4.4", "Mobile")
 boot_splash/bg_color=Color(0, 0, 0, 1)
-config/icon="res://icon.svg"
+config/icon="res://textures/icon.svg"
 
 [display]
 

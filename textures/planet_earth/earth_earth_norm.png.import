@@ -2,9 +2,9 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://p2ikalqkvveq"
-path.s3tc="res://.godot/imported/earth_earth_norm.png-ac6d6b92f390d479bcd2400ca475f09e.s3tc.ctex"
-path.etc2="res://.godot/imported/earth_earth_norm.png-ac6d6b92f390d479bcd2400ca475f09e.etc2.ctex"
+uid="uid://ckwdckgnore73"
+path.s3tc="res://.godot/imported/earth_earth_norm.png-bc92a3ca13b99817e859b1a46e6bb928.s3tc.ctex"
+path.etc2="res://.godot/imported/earth_earth_norm.png-bc92a3ca13b99817e859b1a46e6bb928.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -15,8 +15,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://earth_earth_norm.png"
-dest_files=["res://.godot/imported/earth_earth_norm.png-ac6d6b92f390d479bcd2400ca475f09e.s3tc.ctex", "res://.godot/imported/earth_earth_norm.png-ac6d6b92f390d479bcd2400ca475f09e.etc2.ctex"]
+source_file="res://textures/planet_earth/earth_earth_norm.png"
+dest_files=["res://.godot/imported/earth_earth_norm.png-bc92a3ca13b99817e859b1a46e6bb928.s3tc.ctex", "res://.godot/imported/earth_earth_norm.png-bc92a3ca13b99817e859b1a46e6bb928.etc2.ctex"]
 
 [params]
 
@@ -29,11 +29,11 @@ compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=1
-roughness/src_normal="res://earth_earth_norm.png"
+roughness/src_normal="res://textures/planet_earth/earth_earth_norm.png"
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=1024
+process/size_limit=0
 detect_3d/compress_to=0

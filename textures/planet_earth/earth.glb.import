@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://cdgs4mynk5lvd"
-path="res://.godot/imported/earth.glb-7fe70f3312fc8937db010b8a3d1300b3.scn"
+path="res://.godot/imported/earth.glb-2ba1796acbd99e325727870d002b4c05.scn"
 
 [deps]
 
-source_file="res://earth.glb"
-dest_files=["res://.godot/imported/earth.glb-7fe70f3312fc8937db010b8a3d1300b3.scn"]
+source_file="res://textures/planet_earth/earth.glb"
+dest_files=["res://.godot/imported/earth.glb-2ba1796acbd99e325727870d002b4c05.scn"]
 
 [params]
 

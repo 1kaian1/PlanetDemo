@@ -5,11 +5,18 @@ extends Node3D
 var planet: MeshInstance3D
 var coinfield: Node3D
 
+
+
 func _ready():
 	planet = get_node("EarthPlanet")
 	coinfield = get_node("CoinField")
 	if planet == null:
 		print("⚠️ Planeta nebyla nalezena!")
+		
+		
+	var aabb = $EarthPlanet.get_aabb()
+	var radius = aabb.size.length() / 2.0  # Přibližný poloměr
+	print("Poloměr objektu:", radius)
 
 func _process(delta):
 	if planet:
