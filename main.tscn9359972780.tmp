@@ -1,15 +1,14 @@
-[gd_scene load_steps=22 format=4 uid="uid://ec35w7lhfdf2"]
+[gd_scene load_steps=23 format=4 uid="uid://cb42u1t8h6oaj"]
 
 [ext_resource type="Texture2D" uid="uid://c7aqqwkfwbgpr" path="res://earth_earth_diff.png" id="1_0xm2m"]
 [ext_resource type="Texture2D" uid="uid://dk7b6pg4dx7ko" path="res://coin.png" id="1_kek77"]
 [ext_resource type="Shader" uid="uid://d24sooj7mia6i" path="res://main.gdshader" id="2_4c57u"]
 [ext_resource type="Texture2D" uid="uid://p2ikalqkvveq" path="res://earth_earth_norm.png" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://l3xs2ljq1ccr" path="res://earth.gd" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://coin_field.gd" id="3_5vw27"]
 [ext_resource type="Texture2D" uid="uid://c2iwfmxgkvabu" path="res://striped_circle.png" id="3_efxa6"]
 [ext_resource type="Script" uid="uid://c2w4jxdnumoex" path="res://starfield.gd" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://dlwqyw74g0ufw" path="res://ui_3d.gd" id="5_272bh"]
-[ext_resource type="Script" uid="uid://cihalwytpcljx" path="res://camera_3d.gd" id="6_dg77c"]
-[ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://node_3d.gd" id="6_efxa6"]
 [ext_resource type="Script" uid="uid://ckq13w7nofarf" path="res://discover.gd" id="7_272bh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_272bh"]
@@ -38,7 +37,53 @@ corner_radius_bottom_left = 50
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dg77c"]
 shader = ExtResource("2_4c57u")
 
+[sub_resource type="GDScript" id="GDScript_efxa6"]
+script/source = "extends Camera3D
+
+# Zpracování kliknutí
+func _unhandled_input(event):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# Získání kamery a její pozice na obrazovce
+		var camera = get_viewport().get_camera_3d()
+		if camera:
+			var from = camera.project_ray_origin(event.position)  # Počáteční bod ray
+			var to = from + camera.project_ray_normal(event.position) * 1000  # Konec ray (dohled 1000 jednotek)
+
+			# Vytvoření raycastu
+			var ray_params = PhysicsRayQueryParameters3D.create(from, to)
+			var space_state = get_world_3d().direct_space_state  # Přístup k fyzikálnímu světu
+			var result = space_state.intersect_ray(ray_params)
+
+			if result and result.collider:
+				print(\"Kliknuto na: \", result.collider.name)
+				# Pokud jsi kliknul na objekt s názvem \"coin_\", tak ho smaž
+				if result.collider.name.begins_with(\"coin_\"):
+					result.collider.queue_free()  # Odstraní kliknutý coin
+"
+
 [sub_resource type="Environment" id="Environment_lquwl"]
+
+[sub_resource type="GDScript" id="GDScript_272bh"]
+script/source = "extends Node3D
+
+@export var rotation_speed := 0.2 # radiány za sekundu
+
+var planet: MeshInstance3D
+var coinfield: Node3D
+
+func _ready():
+	planet = get_node(\"EarthPlanet\")
+	coinfield = get_node(\"CoinField\")
+	if planet == null:
+		print(\"⚠️ Planeta nebyla nalezena!\")
+
+func _process(delta):
+	if planet:
+		planet.rotate_y(rotation_speed * delta)
+	if coinfield:
+		coinfield.rotate_y(rotation_speed * delta)
+		
+"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qgrt4"]
 resource_name = "Default OBJ"
@@ -202,18 +247,19 @@ script = ExtResource("5_7mycd")
 
 [node name="Camera3D" type="Camera3D" parent="UI3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
-script = ExtResource("6_dg77c")
+script = SubResource("GDScript_efxa6")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="UI3D"]
 environment = SubResource("Environment_lquwl")
 
 [node name="Node3D" type="Node3D" parent="UI3D"]
-script = ExtResource("6_efxa6")
+script = SubResource("GDScript_272bh")
 
 [node name="EarthPlanet" type="MeshInstance3D" parent="UI3D/Node3D"]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_j80wj")
 surface_material_override/0 = SubResource("StandardMaterial3D_h2yge")
+script = ExtResource("3_1bvp3")
 
 [node name="CoinField" type="Node3D" parent="UI3D/Node3D"]
 script = ExtResource("3_5vw27")

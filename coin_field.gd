@@ -7,6 +7,7 @@ const COIN_COLLISION_FIELD = 100
 const CLICK_DELAY = 1
 
 @onready var camera = get_node("/root/main/UI3D/Camera3D")
+@onready var spawn_timer = Timer.new()
 
 var last_click_time = 0.0
 var coins_currently_spawned = 0
@@ -14,30 +15,37 @@ var coins_gathered = 0
 
 func _ready():
 	
-	while true:
+	spawn_timer.wait_time = 60.0 / COINS_PER_MINUTE
 
-		if coins_currently_spawned < COIN_MAX_COUNT:
-			
-			var random_time = randf_range(0.0, 60.0 / COINS_PER_MINUTE)
-			await get_tree().create_timer(random_time).timeout
-			
-			create_coin()
-			
-			coins_currently_spawned += 1
+	add_child(spawn_timer)
+	spawn_timer.connect("timeout", Callable(self, "_spawn_coin"))
+	spawn_timer.start()
 
+func _spawn_coin():
+	
+	if coins_currently_spawned < COIN_MAX_COUNT:
+		create_coin()
+		coins_currently_spawned += 1
+		
 func _input(event):
 	
 	if event is InputEventMouseButton and event.pressed:
 				
 		for i in range(get_child_count()):
-			var coin_node = get_child(i)
-			var coin_screen_pos = camera.unproject_position(coin_node.global_transform.origin)
-			var distance = event.position.distance_to(coin_screen_pos) 
 			
-			if distance <= COIN_COLLISION_FIELD:
-				_on_coin_clicked(coin_node)
+			var coin_node = get_child(i)
+			
+			if coin_node is Area3D:
+				
+				var coin_screen_pos = camera.unproject_position(coin_node.global_transform.origin)
+				var distance = event.position.distance_to(coin_screen_pos) 
+				
+				if distance <= COIN_COLLISION_FIELD:
+					_on_coin_clicked(coin_node)
 
 func _on_coin_clicked(coin_node):
+	
+	print("OCC")
 	
 	if Time.get_ticks_msec() / 1000.0 - last_click_time < CLICK_DELAY:
 		return
