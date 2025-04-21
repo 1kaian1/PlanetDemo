@@ -32,7 +32,8 @@ project/assembly_name="planet_demo"
 
 [editor]
 
-version_control/plugin_name="godot-git-plugin"
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
 
 [input_devices]
 
