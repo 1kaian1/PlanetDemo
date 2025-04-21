@@ -2,15 +2,12 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wgwy84i86kpo"
+uid="uid://c0i5ob7xaipk1"
 path.s3tc="res://.godot/imported/earth_earth_diff.png-a3476073c1760b679bdb9f4a0c849b58.s3tc.ctex"
 path.etc2="res://.godot/imported/earth_earth_diff.png-a3476073c1760b679bdb9f4a0c849b58.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "01dd10af873646d6545322101fc0abc3"
 }
 
 [deps]

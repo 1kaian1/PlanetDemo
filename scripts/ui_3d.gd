@@ -13,7 +13,7 @@ var camera : Camera3D
 
 var dragging : bool = false
 var last_touch_pos : Vector2 = Vector2.ZERO
-var rotation_speed : float = 0.5  # Rychlost interpolace (setrvačnost)
+var rotation_speed : float = 0.3  # Rychlost interpolace (setrvačnost)
 
 var active_touches : int = 0  # Sledování počtu aktivních dotyků
 

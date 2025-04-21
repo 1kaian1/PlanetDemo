@@ -6,9 +6,11 @@ void vertex() {
 
 void fragment() {
     vec4 tex_color = texture(TEXTURE, UV);
-    tex_color.rgb = vec3(1.0) * tex_color.a; // ✅ Změní černou na bílou, ponechá průhlednost
+    tex_color.rgb = vec3(1.0, 1.0, 1.0);  // Červená barva
+    tex_color.a *= 1.0;  // ✅ Nastavení poloprůhlednosti (50 %)
     COLOR = tex_color;
 }
+
 
 //void light() {
 //	// Called for every pixel for every light affecting the CanvasItem.

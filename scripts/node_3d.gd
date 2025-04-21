@@ -12,11 +12,6 @@ func _ready():
 	coinfield = get_node("CoinField")
 	if planet == null:
 		print("⚠️ Planeta nebyla nalezena!")
-		
-		
-	var aabb = $EarthPlanet.get_aabb()
-	var radius = aabb.size.length() / 2.0  # Přibližný poloměr
-	print("Poloměr objektu:", radius)
 
 func _process(delta):
 	if planet:

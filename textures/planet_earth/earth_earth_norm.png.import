@@ -2,15 +2,12 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckwdckgnore73"
+uid="uid://cfjxl242sap8s"
 path.s3tc="res://.godot/imported/earth_earth_norm.png-bc92a3ca13b99817e859b1a46e6bb928.s3tc.ctex"
 path.etc2="res://.godot/imported/earth_earth_norm.png-bc92a3ca13b99817e859b1a46e6bb928.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "895431f25f02d898aaca998135df0d78"
 }
 
 [deps]
@@ -28,8 +25,8 @@ compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=1
-roughness/src_normal="res://textures/planet_earth/earth_earth_norm.png"
+roughness/mode=0
+roughness/src_normal=""
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
