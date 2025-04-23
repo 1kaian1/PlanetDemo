@@ -1,25 +1,22 @@
 extends Node3D
 
-const COIN_MAX_COUNT = 25
-const COINS_PER_MINUTE = 5
-const COIN_FIELD_RADIUS = 50.2
-const COIN_COLLISION_FIELD = 100
-const CLICK_DELAY = 1
+@export var COIN_MAX_COUNT = 25
+@export var COINS_PER_MINUTE = 5
+@export var COIN_FIELD_RADIUS = 50.2
+@export var COIN_COLLISION_FIELD = 100
 
-@onready var camera = get_node("/root/main/UI3D/Camera3D")
-@onready var save_game = get_node("/root/main/Node")
+@onready var camera = get_node("/root/main/Camera3D")
+@onready var coin_label = get_node("/root/main/UI2D/Control/CoinBar/CoinLabel")
 @onready var spawn_timer = Timer.new()
 
 var coins_currently_spawned = 0
 var coins_gathered = 0
 
-
 func _ready():
 		
-	coins_gathered = save_game.load_coins()
-	$/root/main/UI2D/Control/CoinBar/Label.text = str(int(coins_gathered))
+	coins_gathered = coin_label.load_coins()
 	
-	spawn_timer.wait_time = 6.0 / COINS_PER_MINUTE
+	spawn_timer.wait_time = 60.0 / COINS_PER_MINUTE
 
 	add_child(spawn_timer)
 	spawn_timer.connect("timeout", Callable(self, "_spawn_coin"))
@@ -30,7 +27,7 @@ func _spawn_coin():
 	if coins_currently_spawned < COIN_MAX_COUNT:
 		create_coin()
 		coins_currently_spawned += 1
-				
+		
 func _input(event):
 	
 	if event is InputEventMouseButton and event.pressed:
@@ -69,10 +66,8 @@ func _on_coin_clicked(coin_node):
 	
 	coins_currently_spawned -= 1
 	coins_gathered += 1
-	save_game.save_coins(coins_gathered)
+	coin_label.save_coins()
 	
-	$/root/main/UI2D/Control/CoinBar/Label.text = str(int(coins_gathered))
-
 func get_random_position_on_surface():
 	
 	var theta = randf_range(0, PI * 2)

@@ -1,6 +1,5 @@
-[gd_scene load_steps=23 format=4 uid="uid://ec35w7lhfdf2"]
+[gd_scene load_steps=24 format=4 uid="uid://ec35w7lhfdf2"]
 
-[ext_resource type="Script" uid="uid://c0laidvw3sgfg" path="res://scripts/ui_2d.gd" id="1_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://dk7b6pg4dx7ko" path="res://textures/coin.png" id="1_ya4ey"]
 [ext_resource type="Shader" uid="uid://d24sooj7mia6i" path="res://shaders/striped_circle.gdshader" id="2_eb6dy"]
 [ext_resource type="Script" uid="uid://4s28bgefdnva" path="res://scripts/coin_label.gd" id="3_a8y0u"]
@@ -8,14 +7,13 @@
 [ext_resource type="Script" uid="uid://dlwqyw74g0ufw" path="res://scripts/ui_3d.gd" id="4_a8y0u"]
 [ext_resource type="Shader" uid="uid://dikrthru26uhj" path="res://shaders/red_circle.gdshader" id="4_jkv2x"]
 [ext_resource type="Texture2D" uid="uid://dqjbssa0o10bt" path="res://textures/white_circle.png" id="4_trceg"]
-[ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://scripts/planet_rotation.gd" id="7_muem4"]
-[ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
+[ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://scripts/node_3d.gd" id="7_muem4"]
+[ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/starfield_new.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://scripts/coin_field.gd" id="10_gqmmt"]
-[ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="13_a8y0u"]
-
-[sub_resource type="Environment" id="Environment_lquwl"]
-background_mode = 1
+[ext_resource type="Script" uid="uid://s1pen8sc3cir" path="res://scripts/save_game.gd" id="11_ya4ey"]
+[ext_resource type="Script" uid="uid://ckq13w7nofarf" path="res://scripts/discover.gd" id="11_yc10j"]
+[ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scenes/axis.gd" id="13_a8y0u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_272bh"]
 
@@ -71,16 +69,19 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
+[sub_resource type="Environment" id="Environment_lquwl"]
+background_mode = 1
+background_color = Color(0.47788, 0.47788, 0.47788, 1)
+
 [node name="main" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
 
-[node name="World" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_lquwl")
+[node name="SaveGame" type="Node" parent="."]
+script = ExtResource("11_ya4ey")
 
 [node name="UI2D" type="Node3D" parent="."]
-script = ExtResource("1_a8y0u")
 
 [node name="Control" type="Control" parent="UI2D"]
 layout_mode = 3
@@ -108,7 +109,7 @@ theme_override_constants/h_separation = 25
 theme_override_constants/v_separation = 25
 columns = 2
 
-[node name="DiscoveryModeButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
+[node name="DiscoverButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -118,18 +119,6 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_5vw27")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
 theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
 text = "Discover"
-
-[node name="HomeModeButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 50
-theme_override_styles/focus = SubResource("StyleBoxEmpty_272bh")
-theme_override_styles/hover = SubResource("StyleBoxFlat_5vw27")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
-theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
-text = "Home
-"
 
 [node name="SearchButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -142,7 +131,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
 theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
 text = "Search"
 
-[node name="ExitButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
+[node name="HomeButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -151,7 +140,8 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_272bh")
 theme_override_styles/hover = SubResource("StyleBoxFlat_5vw27")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
 theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
-text = "Exit"
+text = "Home
+"
 
 [node name="CoinBar" type="HBoxContainer" parent="UI2D/Control"]
 layout_mode = 1
@@ -174,8 +164,9 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "0"
 script = ExtResource("3_a8y0u")
+save_path = null
 
-[node name="DiscoveryMode" type="MarginContainer" parent="UI2D/Control"]
+[node name="SearchMode" type="MarginContainer" parent="UI2D/Control"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -188,20 +179,18 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.5, 1.5)
 
-[node name="MarkedArea" type="TextureRect" parent="UI2D/Control/DiscoveryMode"]
+[node name="MarkedArea" type="TextureRect" parent="UI2D/Control/SearchMode"]
 material = SubResource("ShaderMaterial_jbj1t")
 layout_mode = 2
 texture = ExtResource("4_trceg")
 
-[node name="SearchAreaIndicator" type="TextureRect" parent="UI2D/Control/DiscoveryMode"]
+[node name="SearchAreaIndicator" type="TextureRect" parent="UI2D/Control/SearchMode"]
 material = SubResource("ShaderMaterial_dg77c")
 layout_mode = 2
 texture = ExtResource("3_trceg")
 
 [node name="UI3D" type="Node3D" parent="."]
 script = ExtResource("4_a8y0u")
-
-[node name="DiscoveryField" type="Node3D" parent="UI3D"]
 
 [node name="StarField" type="Node3D" parent="UI3D"]
 script = ExtResource("7_trceg")
@@ -218,6 +207,12 @@ skeleton = NodePath("")
 [node name="CoinField" type="Node3D" parent="UI3D/PlanetRotation"]
 script = ExtResource("10_gqmmt")
 
+[node name="DiscoverMode" type="Node3D" parent="UI3D"]
+script = ExtResource("11_yc10j")
+
 [node name="Axis" type="Node3D" parent="UI3D"]
 visible = false
 script = ExtResource("13_a8y0u")
+
+[node name="World" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_lquwl")

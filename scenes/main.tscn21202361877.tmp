@@ -1,6 +1,6 @@
-[gd_scene load_steps=23 format=4 uid="uid://ec35w7lhfdf2"]
+[gd_scene load_steps=24 format=4 uid="uid://ec35w7lhfdf2"]
 
-[ext_resource type="Script" uid="uid://c0laidvw3sgfg" path="res://scripts/ui_2d.gd" id="1_a8y0u"]
+[ext_resource type="Script" uid="uid://c0laidvw3sgfg" path="res://scenes/ui_2d.gd" id="1_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://dk7b6pg4dx7ko" path="res://textures/coin.png" id="1_ya4ey"]
 [ext_resource type="Shader" uid="uid://d24sooj7mia6i" path="res://shaders/striped_circle.gdshader" id="2_eb6dy"]
 [ext_resource type="Script" uid="uid://4s28bgefdnva" path="res://scripts/coin_label.gd" id="3_a8y0u"]
@@ -12,10 +12,12 @@
 [ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://scripts/coin_field.gd" id="10_gqmmt"]
-[ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="13_a8y0u"]
+[ext_resource type="Script" uid="uid://ckq13w7nofarf" path="res://scripts/discover.gd" id="11_yc10j"]
+[ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scenes/axis.gd" id="13_a8y0u"]
 
 [sub_resource type="Environment" id="Environment_lquwl"]
 background_mode = 1
+background_color = Color(0.47788, 0.47788, 0.47788, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_272bh"]
 
@@ -151,7 +153,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_272bh")
 theme_override_styles/hover = SubResource("StyleBoxFlat_5vw27")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
 theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
-text = "Exit"
+text = "Exit mode"
 
 [node name="CoinBar" type="HBoxContainer" parent="UI2D/Control"]
 layout_mode = 1
@@ -217,6 +219,9 @@ skeleton = NodePath("")
 
 [node name="CoinField" type="Node3D" parent="UI3D/PlanetRotation"]
 script = ExtResource("10_gqmmt")
+
+[node name="DiscoverMode" type="Node3D" parent="UI3D"]
+script = ExtResource("11_yc10j")
 
 [node name="Axis" type="Node3D" parent="UI3D"]
 visible = false
