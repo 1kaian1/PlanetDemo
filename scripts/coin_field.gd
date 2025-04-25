@@ -66,7 +66,7 @@ func _on_coin_clicked(coin_node):
 	
 	coins_currently_spawned -= 1
 	coins_gathered += 1
-	coin_label.save_coins()
+	coin_label.save_coins(1)
 	
 func get_random_position_on_surface():
 	

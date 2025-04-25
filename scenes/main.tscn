@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=4 uid="uid://ec35w7lhfdf2"]
+[gd_scene load_steps=25 format=4 uid="uid://ec35w7lhfdf2"]
 
 [ext_resource type="Script" uid="uid://c0laidvw3sgfg" path="res://scripts/ui_2d.gd" id="1_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://dk7b6pg4dx7ko" path="res://textures/coin.png" id="1_ya4ey"]
@@ -11,7 +11,9 @@
 [ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://scripts/planet_rotation.gd" id="7_muem4"]
 [ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
+[ext_resource type="Script" uid="uid://2m6mbdblu402" path="res://scenes/factories.gd" id="8_jkv2x"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://scripts/coin_field.gd" id="10_gqmmt"]
+[ext_resource type="Script" uid="uid://kewd8knjg22b" path="res://scripts/planet_earth.gd" id="12_a8y0u"]
 [ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="13_a8y0u"]
 
 [sub_resource type="Environment" id="Environment_lquwl"]
@@ -198,6 +200,33 @@ material = SubResource("ShaderMaterial_dg77c")
 layout_mode = 2
 texture = ExtResource("3_trceg")
 
+[node name="Label" type="Label" parent="UI2D/Control/DiscoveryMode/SearchAreaIndicator"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -34.5
+offset_right = 120.0
+offset_bottom = 34.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "-100 coins"
+
+[node name="Factories" type="Button" parent="UI2D/Control"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 500.0
+offset_right = 1030.0
+offset_bottom = 500.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 100
+text = "Factories"
+script = ExtResource("8_jkv2x")
+
 [node name="UI3D" type="Node3D" parent="."]
 script = ExtResource("4_a8y0u")
 
@@ -214,6 +243,7 @@ transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 rotation_edit_mode = 1
 mesh = SubResource("ArrayMesh_b4p1c")
 skeleton = NodePath("")
+script = ExtResource("12_a8y0u")
 
 [node name="CoinField" type="Node3D" parent="UI3D/PlanetRotation"]
 script = ExtResource("10_gqmmt")

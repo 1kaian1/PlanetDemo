@@ -1,6 +1,6 @@
 extends Node3D
 
-@export var STAR_FIELD_RADIUS = 300
+@export var STAR_FIELD_RADIUS = 500
 @export var STAR_COUNT = 500
 
 func _ready():
@@ -15,7 +15,7 @@ func _ready():
 
 		var coin_sprite = Sprite3D.new()
 		coin_sprite.texture = load("res://textures/white_circle.png")
-		coin_sprite.scale = Vector3(1,1,1)
+		coin_sprite.scale = Vector3(1.3,1.3,1.3)
 		coin_node.look_at(Vector3.ZERO, Vector3.UP)
 		coin_node.add_child(coin_sprite)
 

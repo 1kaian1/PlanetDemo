@@ -2,17 +2,17 @@ extends Label
 
 @export var save_path = "user://save_file.json"
 
-func save_coins():
+func save_coins(number):
 	
 	var coins_gathered = load_coins()
-	coins_gathered += 1
+	coins_gathered += number
 	
 	var save_data = {"coins": coins_gathered}
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
 	file.store_string(JSON.stringify(save_data))
 	file.close()
 	
-	#text = str(coins_gathered)
+	text = str(int(coins_gathered))
 	
 func load_coins():	
 		
@@ -23,7 +23,7 @@ func load_coins():
 		file.close()
 		
 		if save_data:
-			text = str(int(save_data.get("coins", 0) + 1))
+			text = str(int(save_data.get("coins", 0)))
 			return save_data.get("coins", 0)
 	
 	text = "0"

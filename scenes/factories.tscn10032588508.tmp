@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://udsq1tfrwyck"]
+
+[ext_resource type="Script" uid="uid://70nhmop0cnfy" path="res://scenes/node_3D.gd" id="1_8i7y1"]
+[ext_resource type="Script" uid="uid://870asemh5j2m" path="res://scenes/return.gd" id="1_fkwl3"]
+
+[node name="Node2D" type="Node3D"]
+script = ExtResource("1_8i7y1")
+
+[node name="Control2" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Control2"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -103.5
+offset_top = -45.5
+offset_right = 103.5
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Return" type="Button" parent="Control2/CenterContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Return"
+script = ExtResource("1_fkwl3")

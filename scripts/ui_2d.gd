@@ -20,9 +20,11 @@ extends Node3D
 
 @onready var camera = get_node("/root/main/Camera3D")
 
+@onready var coin_label = get_node("/root/main/UI2D/Control/CoinBar/CoinLabel")
+
 
 var target_position : Vector3
-var lerp_speed : float = 5.0
+var lerp_speed : float = 1.0
 var buttons_split := false
 var distance : float = 0.0
 
@@ -46,6 +48,9 @@ func _ready():
 func _on_DiscoveryModeButton_pressed():
 	
 	target_position = Vector3(0, 0, 1)
+	
+	var planet_earth = get_node("/root/main/UI3D/PlanetRotation/PlanetEarth")
+	planet_earth.fade_out()
 	
 	search_button.visible = true
 	exit_button.visible = true
@@ -80,6 +85,9 @@ func _on_ExitButton_pressed():
 		
 		target_position = Vector3(0, 0, 200)
 		
+		var planet_earth = get_node("/root/main/UI3D/PlanetRotation/PlanetEarth")
+		planet_earth.fade_in()
+		
 		search_button.visible = false
 		exit_button.visible = false
 		
@@ -91,11 +99,13 @@ func _on_ExitButton_pressed():
 		search_area_indicator.visible = false
 		
 	else:
-		
+			
 		target_position = Vector3(0, 0, 200)
 		
 		#build_button.visible = false
 		exit_button.visible = false
+		search_button.visible = false # tohle je trochu prasárna
+
 		
 		discovery_mode_button.visible = true
 		home_mode_button.visible = true
@@ -123,6 +133,10 @@ func _process(delta):
 func _on_SearchButton_pressed():
 	
 	var target_node = get_node("/root/main/UI3D/DiscoveryField")
+	
+	coin_label.save_coins(-100)
+	
+	
 	
 	var pos = get_position_in_camera_view()
 	var coin_node = Area3D.new()
