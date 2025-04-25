@@ -9,8 +9,8 @@ var velocity = Vector2.ZERO  # rychlost pro plynulé posouvání
 var friction = 0.95  # tření pro zpomalení pohybu (0.95 = pomalé zpomalení, 0.98 = rychlé zpomalení)
 var drag_sensitivity = 0.5  # citlivost pro drag (nižší = pomalejší pohyb)
 
-var api_key = "IEaWHMt1rEr501Lu3hNS"
-var base_url = "https://api.maptiler.com/maps/streets-v2/256"
+var api_key = "IEaWHMt1rEr501Lu3hNS"  # Tohle je tvůj Mapbox API klíč
+var base_url = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token="
 
 var screen_width = 1080
 var screen_height = 2400
@@ -49,7 +49,7 @@ func redraw_map():
 				sprite.position = position
 				add_child(sprite)
 			else:
-				var url = "%s/%d/%d/%d.png?key=%s" % [base_url, zoom, x, y, api_key]
+				var url = "%s%d/%d/%d.png?access_token=%s" % [base_url, zoom, x, y, api_key]
 				var http_request = HTTPRequest.new()
 				add_child(http_request)
 				http_request.request_completed.connect(_on_request_completed.bind(http_request, dx, dy, zoom, x, y))
