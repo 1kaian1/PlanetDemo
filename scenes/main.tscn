@@ -11,13 +11,14 @@
 [ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://scripts/planet_rotation.gd" id="7_muem4"]
 [ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
-[ext_resource type="Script" uid="uid://2m6mbdblu402" path="res://scenes/factories.gd" id="8_jkv2x"]
+[ext_resource type="Script" uid="uid://2m6mbdblu402" path="res://scripts/factories.gd" id="8_jkv2x"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://scripts/coin_field.gd" id="10_gqmmt"]
 [ext_resource type="Script" uid="uid://kewd8knjg22b" path="res://scripts/planet_earth.gd" id="12_a8y0u"]
 [ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="13_a8y0u"]
 
 [sub_resource type="Environment" id="Environment_lquwl"]
 background_mode = 1
+background_color = Color(0.687215, 0.687215, 0.687215, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_272bh"]
 
@@ -219,6 +220,7 @@ theme_override_font_sizes/font_size = 50
 text = "-100 coins"
 
 [node name="Factories" type="Button" parent="UI2D/Control"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 offset_left = 500.0
@@ -251,5 +253,4 @@ script = ExtResource("12_a8y0u")
 script = ExtResource("10_gqmmt")
 
 [node name="Axis" type="Node3D" parent="UI3D"]
-visible = false
 script = ExtResource("13_a8y0u")
