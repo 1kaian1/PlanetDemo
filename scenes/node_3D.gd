@@ -1,16 +1,16 @@
 extends Node2D
 
-var tile_size = 256
-var zoom = 10
+var tile_size = 256  # Velikost dlaždice pro běžné mapy (256x256)
+var zoom = 12  # Standardní úroveň zoomu pro podrobnější zobrazení (Google Maps styl)
 var center_tile_x = 540
 var center_tile_y = 345
 var offset = Vector2.ZERO  # jemný posun
 var velocity = Vector2.ZERO  # rychlost pro plynulé posouvání
-var friction = 0.95  # tření pro zpomalení pohybu (0.95 = pomalé zpomalení, 0.98 = rychlé zpomalení)
-var drag_sensitivity = 0.5  # citlivost pro drag (nižší = pomalejší pohyb)
+var friction = 0.95  # tření pro zpomalení pohybu
+var drag_sensitivity = 0.3  # citlivost pro drag
 
-var api_key = "IEaWHMt1rEr501Lu3hNS"  # Tohle je tvůj Mapbox API klíč
-var base_url = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token="
+var api_key = "ItmOkg30ZmpjFygaNDGR"  # Tohle je tvůj Maplibre API klíč
+var base_url = "https://a.tile.openstreetmap.org/%d/%d/%d.png"
 
 var screen_width = 1080
 var screen_height = 2400
@@ -21,6 +21,12 @@ var drag_map_start = Vector2.ZERO
 
 var tile_cache = {}  # nový cache slovník
 
+# Uložení pozic prstů pro zoomování
+var touch_points = []
+
+# Přidání proměnné pro uchování předchozí vzdálenosti mezi prsty
+var prev_distance = -1  # Počáteční hodnota je neplatná
+
 func _ready():
 	redraw_map()
 
@@ -30,6 +36,7 @@ func redraw_map():
 		if child is Sprite2D:
 			child.queue_free()
 
+	# Počet dlaždic na šířku a výšku obrazovky
 	var tiles_x = ceil(float(screen_width) / tile_size) + 2
 	var tiles_y = ceil(float(screen_height) / tile_size) + 2
 
@@ -49,7 +56,7 @@ func redraw_map():
 				sprite.position = position
 				add_child(sprite)
 			else:
-				var url = "%s%d/%d/%d.png?access_token=%s" % [base_url, zoom, x, y, api_key]
+				var url = base_url % [zoom, x, y]
 				var http_request = HTTPRequest.new()
 				add_child(http_request)
 				http_request.request_completed.connect(_on_request_completed.bind(http_request, dx, dy, zoom, x, y))
@@ -57,11 +64,13 @@ func redraw_map():
 
 func _on_request_completed(result, response_code, headers, body, http_request, dx, dy, z, x, y):
 	if result != HTTPRequest.RESULT_SUCCESS:
+		print("Request failed with code %d" % response_code)  # Debug: ověření chyby
 		http_request.queue_free()
 		return
 
 	var image = Image.new()
 	if image.load_png_from_buffer(body) != OK:
+		print("Failed to load image")  # Debug: ověření načítání obrázku
 		http_request.queue_free()
 		return
 
@@ -79,56 +88,52 @@ func _on_request_completed(result, response_code, headers, body, http_request, d
 
 	http_request.queue_free()
 
+# Funkce pro detekci dotykového vstupu
 func _input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			is_dragging = event.pressed
-			if is_dragging:
-				drag_start = event.position
-				drag_map_start = offset
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			# Přidání nového prstu do seznamu
+			touch_points.append(event.position)
+		else:
+			# Odstranění uvolněného prstu ze seznamu
+			touch_points.erase(event.position)
 
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			if zoom < 18:
-				zoom += 1
-				center_tile_x *= 2
-				center_tile_y *= 2
-				offset *= 2
-				redraw_map()
+		if len(touch_points) == 2:
+			# Pokud jsou dva prsty na displeji, provádíme zoom
+			var touch1 = touch_points[0]
+			var touch2 = touch_points[1]
 
-		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			if zoom > 0:
-				zoom -= 1
-				center_tile_x /= 2
-				center_tile_y /= 2
-				offset /= 2
-				redraw_map()
+			# Vypočítáme vzdálenost mezi prsty
+			var dist = touch1.distance_to(touch2)
 
-	elif event is InputEventMouseMotion and is_dragging:
-		# Plynulejší posouvání pomocí zpomalení a setrvačnosti
-		velocity = (event.position - drag_start) * drag_sensitivity
-		offset = drag_map_start + velocity
+			# Pokud se vzdálenost změnila, provádíme zoom
+			if prev_distance == -1:  # Pokud je hodnota -1, znamená to, že předchozí vzdálenost ještě není nastavena
+				prev_distance = dist
+			else:
+				var zoom_factor = dist / prev_distance
 
-		# Zajištění správného posouvání po dlaždicích
-		while offset.x > tile_size:
-			offset.x -= tile_size
-			center_tile_x -= 1
-		while offset.x < -tile_size:
-			offset.x += tile_size
-			center_tile_x += 1
+				# Změna zoomu na základě zoom_factor
+				if zoom_factor > 1 and zoom < 18:  # Přílišný zoom nahoru
+					zoom += 1
+				elif zoom_factor < 1 and zoom > 0:  # Přílišný zoom dolů
+					zoom -= 1
 
-		while offset.y > tile_size:
-			offset.y -= tile_size
-			center_tile_y -= 1
-		while offset.y < -tile_size:
-			offset.y += tile_size
-			center_tile_y += 1
+				prev_distance = dist  # Uložení nové vzdálenosti pro další iteraci
 
-		redraw_map()
+			# Na základě nového zoomu posuneme mapu podle prstů
+			var center_map_x = (touch1.x + touch2.x) / 2
+			var center_map_y = (touch1.y + touch2.y) / 2
 
-	elif event is InputEventMouseMotion and not is_dragging:
-		# Po ukončení tažení zpomalí plynule na základě tření
-		velocity *= friction
-		offset += velocity
-		if velocity.length() < 1:  # Pokud je rychlost velmi malá, zastav
-			velocity = Vector2.ZERO
+			# Převedení pozic prstů na nové souřadnice mapy
+			var offset_diff_x = (center_map_x - screen_width / 2) / tile_size
+			var offset_diff_y = (center_map_y - screen_height / 2) / tile_size
+
+			center_tile_x -= offset_diff_x
+			center_tile_y -= offset_diff_y
+
+			redraw_map()
+
+	elif event is InputEventScreenDrag:
+		# Pohyb mapy při dragování
+		offset += event.relative * drag_sensitivity
 		redraw_map()
