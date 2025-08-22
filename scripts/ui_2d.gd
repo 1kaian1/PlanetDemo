@@ -9,7 +9,7 @@ extends Node3D
 
 @onready var search_area_indicator = get_node("Control/DiscoveryMode/SearchAreaIndicator")
 
-@onready var discovery_field = get_node("/root/main/TransparencyFilter/DiscoveryField")
+@onready var discovery_field = get_node("/root/main/SubViewport/DiscoveryField")
 @onready var coin_field = get_node("/root/main/UI3D/PlanetRotation/CoinField")
 @onready var planet_rotation = get_node("/root/main/UI3D/PlanetRotation")
 @onready var UI3D = get_node("/root/main/UI3D")

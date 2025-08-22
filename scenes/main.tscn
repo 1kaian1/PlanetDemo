@@ -1,9 +1,9 @@
 [gd_scene load_steps=33 format=4 uid="uid://ec35w7lhfdf2"]
 
 [ext_resource type="Script" uid="uid://c0laidvw3sgfg" path="res://scripts/ui_2d.gd" id="1_a8y0u"]
-[ext_resource type="Script" uid="uid://bnu0t0w3pqem7" path="res://scenes/camera_3d.gd" id="1_dp3eg"]
+[ext_resource type="Script" uid="uid://bnu0t0w3pqem7" path="res://scripts/camera_3d.gd" id="1_dp3eg"]
 [ext_resource type="Texture2D" uid="uid://cuhoe03v4lh8a" path="res://textures/coin.png" id="1_ya4ey"]
-[ext_resource type="Shader" uid="uid://d24sooj7mia6i" path="res://shaders/striped_circle.gdshader" id="2_eb6dy"]
+[ext_resource type="Shader" uid="uid://b8fh7t7gn54er" path="res://shaders/striped_circle.gdshader" id="2_eb6dy"]
 [ext_resource type="Script" uid="uid://4s28bgefdnva" path="res://scripts/coin_label.gd" id="3_a8y0u"]
 [ext_resource type="Script" uid="uid://dlwqyw74g0ufw" path="res://scripts/ui_3d.gd" id="4_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://dkwe6w280pg1y" path="res://textures/white_circle_empty_fullline.png" id="6_0ld40"]
@@ -11,13 +11,12 @@
 [ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
 [ext_resource type="Script" uid="uid://2m6mbdblu402" path="res://scripts/factories.gd" id="8_jkv2x"]
-[ext_resource type="Script" uid="uid://dyslfqb3mqs88" path="res://scenes/scroll_container.gd" id="10_dp3eg"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://scripts/coin_field.gd" id="10_gqmmt"]
 [ext_resource type="Script" uid="uid://kewd8knjg22b" path="res://scripts/planet_earth.gd" id="12_a8y0u"]
 [ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="13_a8y0u"]
-[ext_resource type="Script" uid="uid://diu7vodmqbg8w" path="res://scenes/orbit.gd" id="16_jbj1t"]
-[ext_resource type="Script" uid="uid://cl6ktaxnsg4oo" path="res://scenes/discovery_field.gd" id="17_muem4"]
-[ext_resource type="Script" uid="uid://bvl3ss1lgwtf5" path="res://scenes/camera_3d_2.gd" id="19_0ld40"]
+[ext_resource type="Script" uid="uid://cl6ktaxnsg4oo" path="res://scripts/discovery_field.gd" id="17_muem4"]
+[ext_resource type="Script" uid="uid://bvl3ss1lgwtf5" path="res://scripts/camera_3d_2.gd" id="19_0ld40"]
+[ext_resource type="Texture2D" uid="uid://b2cywqdv2g702" path="res://textures/exclamation_mark.png" id="19_gqmmt"]
 
 [sub_resource type="Environment" id="Environment_lquwl"]
 background_mode = 1
@@ -49,8 +48,55 @@ corner_radius_bottom_left = 50
 render_priority = 0
 shader = ExtResource("2_eb6dy")
 
+[sub_resource type="GDScript" id="GDScript_muem4"]
+script/source = "extends ScrollContainer
+
+var last_touch_pos = null
+
+func _ready():
+	for i in 10:
+		var block = Panel.new()
+		block.custom_minimum_size = Vector2(300, 300)
+		block.add_theme_color_override(\"panel\", Color.RED)
+		
+		var label = Label.new()
+		label.text = \"Blok %d\" % (i + 1)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		block.add_child(label)
+		block.mouse_filter = Control.MOUSE_FILTER_PASS  # ⬅️ důležité!
+		$HBoxContainer.add_child(block)
+		
+		# Přidáme klikací chování
+		block.connect(\"gui_input\", Callable(self, \"_on_block_input\").bind(i))
+
+	# Aktivuj zachytávání vstupu
+	set_process_input(true)
+	set_process_unhandled_input(true)
+	
+func _on_block_input(event: InputEvent, index: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		print(\"Kliknuto na blok č. \", index + 1)
+
+
+func _unhandled_input(event):
+	# Dotyk začal
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			last_touch_pos = event.position
+		else:
+			last_touch_pos = null
+
+	# Tažení prstem / touchpadem
+	elif event is InputEventScreenDrag and last_touch_pos != null:
+		scroll_horizontal -= event.relative.x  # Posun horizontálně
+"
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_jbj1t"]
-viewport_path = NodePath("TransparencyFilter")
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l8ocv"]
 resource_name = "Default OBJ"
@@ -110,7 +156,7 @@ bottom_radius = 0.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
 current = true
 script = ExtResource("1_dp3eg")
-subviewport_camera = NodePath("../TransparencyFilter/Camera3D2")
+subviewport_camera = NodePath("../SubViewport/Camera3D2")
 
 [node name="World" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lquwl")
@@ -264,13 +310,13 @@ offset_right = 1080.0
 offset_bottom = 300.0
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
-script = ExtResource("10_dp3eg")
+script = SubResource("GDScript_muem4")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI2D/Control/MoveContainer/Control/ScrollContainer"]
 layout_mode = 2
 
 [node name="TransparencyFilter" type="Sprite2D" parent="UI2D/Control"]
-modulate = Color(1, 1, 1, 0.498039)
+modulate = Color(1, 1, 1, 0.388235)
 z_index = -1
 texture = SubResource("ViewportTexture_jbj1t")
 centered = false
@@ -280,6 +326,8 @@ script = ExtResource("4_a8y0u")
 
 [node name="StarField" type="Node3D" parent="UI3D"]
 script = ExtResource("7_trceg")
+
+[node name="->LootField" type="Node3D" parent="UI3D"]
 
 [node name="PlanetRotation" type="Node3D" parent="UI3D"]
 script = ExtResource("7_muem4")
@@ -311,21 +359,19 @@ draw_pass_1 = SubResource("CylinderMesh_gqmmt")
 visible = false
 script = ExtResource("13_a8y0u")
 
-[node name="XXX-Orbit" type="Node3D" parent="UI3D"]
-visible = false
-script = ExtResource("16_jbj1t")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="UI3D/XXX-Orbit"]
-skeleton = NodePath("../../..")
-
-[node name="TransparencyFilter" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 size = Vector2i(1080, 2400)
 
-[node name="DiscoveryField" type="Node3D" parent="TransparencyFilter"]
+[node name="DiscoveryField" type="Node3D" parent="SubViewport"]
 script = ExtResource("17_muem4")
 
-[node name="Camera3D2" type="Camera3D" parent="TransparencyFilter"]
+[node name="Camera3D2" type="Camera3D" parent="SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
 current = true
 script = ExtResource("19_0ld40")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(300, 500)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("19_gqmmt")
