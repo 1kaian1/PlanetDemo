@@ -16,7 +16,7 @@ extends Node3D
 
 @onready var camera = get_node("/root/main/Camera3D")
 
-@onready var coin_label = get_node("/root/main/UI2D/Control/CoinBar/CoinLabel")
+@onready var coin_counter = get_node("/root/main/UI2D/Control/CoinBar/CoinCounter")
 @onready var price_label = get_node("/root/main/UI2D/Control/DiscoveryMode/PriceLabel")
 
 
@@ -123,7 +123,7 @@ func _process(delta):
 		
 func _on_SearchButton_pressed():
 	
-	coin_label.save_coins(-100)
+	coin_counter.save_coins(-100)
 	
 	var pos = get_position_in_camera_view()
 	var coin_node = Area3D.new()

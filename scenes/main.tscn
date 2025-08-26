@@ -1,16 +1,17 @@
-[gd_scene load_steps=33 format=4 uid="uid://ec35w7lhfdf2"]
+[gd_scene load_steps=34 format=4 uid="uid://ec35w7lhfdf2"]
 
 [ext_resource type="Script" uid="uid://c0laidvw3sgfg" path="res://scripts/ui_2d.gd" id="1_a8y0u"]
 [ext_resource type="Script" uid="uid://bnu0t0w3pqem7" path="res://scripts/camera_3d.gd" id="1_dp3eg"]
 [ext_resource type="Texture2D" uid="uid://cuhoe03v4lh8a" path="res://textures/coin.png" id="1_ya4ey"]
 [ext_resource type="Shader" uid="uid://b8fh7t7gn54er" path="res://shaders/striped_circle.gdshader" id="2_eb6dy"]
-[ext_resource type="Script" uid="uid://4s28bgefdnva" path="res://scripts/coin_label.gd" id="3_a8y0u"]
+[ext_resource type="Script" uid="uid://c4788ngc84x6l" path="res://scripts/coin_counter_autosave.gd" id="3_a8y0u"]
 [ext_resource type="Script" uid="uid://dlwqyw74g0ufw" path="res://scripts/ui_3d.gd" id="4_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://dkwe6w280pg1y" path="res://textures/white_circle_empty_fullline.png" id="6_0ld40"]
 [ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://scripts/planet_rotation.gd" id="7_muem4"]
 [ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
 [ext_resource type="Script" uid="uid://2m6mbdblu402" path="res://scripts/factories.gd" id="8_jkv2x"]
+[ext_resource type="Script" uid="uid://bstjova66tv7n" path="res://scenes/loot_field.gd" id="10_dp3eg"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://scripts/coin_field.gd" id="10_gqmmt"]
 [ext_resource type="Script" uid="uid://kewd8knjg22b" path="res://scripts/planet_earth.gd" id="12_a8y0u"]
 [ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="13_a8y0u"]
@@ -251,7 +252,7 @@ layout_mode = 2
 texture = ExtResource("1_ya4ey")
 expand_mode = 2
 
-[node name="CoinLabel" type="Label" parent="UI2D/Control/CoinBar"]
+[node name="CoinCounter" type="Label" parent="UI2D/Control/CoinBar"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "0"
@@ -328,6 +329,7 @@ script = ExtResource("4_a8y0u")
 script = ExtResource("7_trceg")
 
 [node name="->LootField" type="Node3D" parent="UI3D"]
+script = ExtResource("10_dp3eg")
 
 [node name="PlanetRotation" type="Node3D" parent="UI3D"]
 script = ExtResource("7_muem4")
