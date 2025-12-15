@@ -2,13 +2,6 @@ extends Node3D
 
 @export var WINDOW_FIELD_RADIUS = 300
 
-@onready var discovery_mode_button = get_node("Control/MarginContainer/GridContainer/DiscoveryModeButton")
-@onready var home_mode_button = get_node("Control/MarginContainer/GridContainer/HomeModeButton")
-@onready var search_button = get_node("Control/MarginContainer/GridContainer/SearchButton")
-@onready var exit_button = get_node("Control/MarginContainer/GridContainer/ExitButton")
-
-@onready var search_area_indicator = get_node("Control/DiscoveryMode/SearchAreaIndicator")
-
 @onready var discovery_field = get_node("/root/main/UI3D/DiscoveryField")
 @onready var coin_field = get_node("/root/main/UI3D/PlanetRotation/CoinField")
 @onready var planet_rotation = get_node("/root/main/UI3D/PlanetRotation")
@@ -17,8 +10,8 @@ extends Node3D
 @onready var camera = get_node("/root/main/Camera3D")
 
 @onready var coin_counter = get_node("/root/main/UI2D/Control/CoinBar/CoinCounter")
-@onready var price_label = get_node("/root/main/UI2D/Control/DiscoveryMode/SearchAreaIndicator/PriceLabel")
 
+@onready var ui = $Control2
 
 
 var target_position : Vector3
@@ -27,21 +20,15 @@ var buttons_split := false
 var distance : float = 0.0
 
 func _ready():
-	
-	discovery_mode_button.connect("pressed", Callable(self, "_on_DiscoveryModeButton_pressed"))
-	home_mode_button.connect("pressed", Callable(self, "_on_HomeModeButton_pressed"))
-	search_button.connect("pressed", Callable(self, "_on_SearchButton_pressed"))
-	exit_button.connect("pressed", Callable(self, "_on_ExitButton_pressed"))
-	
+	ui.discovery_mode_pressed.connect(_on_DiscoveryModeButton_pressed)
+	ui.home_mode_pressed.connect(_on_HomeModeButton_pressed)
+	ui.search_pressed.connect(_on_SearchButton_pressed)
+	ui.exit_pressed.connect(_on_ExitButton_pressed)
+
 	target_position = camera.position
 
-	search_button.visible = false
-	exit_button.visible = false
-	search_area_indicator.visible = false
-	
+	ui.set_ready_ui(true)
 	discovery_field.visible = false
-	
-	price_label.visible = false
 	
 func _on_DiscoveryModeButton_pressed():
 	
@@ -50,17 +37,11 @@ func _on_DiscoveryModeButton_pressed():
 	var planet_earth = get_node("/root/main/UI3D/PlanetRotation/PlanetEarth")
 	planet_earth.fade_out()
 	
-	search_button.visible = true
-	exit_button.visible = true
+	ui.set_discovery_ui(true)
 	
-	discovery_mode_button.visible = false
-	home_mode_button.visible = false
-	
-	price_label.visible = true
 	
 	discovery_field.visible = true
 	coin_field.visible = false
-	search_area_indicator.visible = true
 	
 	#grid.move_child(search_button, 0)
 	
@@ -68,10 +49,10 @@ func _on_HomeModeButton_pressed():
 	
 	target_position = Vector3(0, 0, 60)
 	
+	ui.set_home_ui(true)
+
 	#build_button.visible = true
-	exit_button.visible = true
-	
-	home_mode_button.visible = false
+
 	coin_field.visible = false
 	
 	planet_rotation.rotation_speed = 0.0
@@ -83,6 +64,8 @@ func _on_ExitButton_pressed():
 	
 	distance = camera.position.length()
 	
+	ui.set_exit_ui(true)
+	
 	if distance < 50:
 		
 		target_position = Vector3(0, 0, 200)
@@ -90,40 +73,29 @@ func _on_ExitButton_pressed():
 		var planet_earth = get_node("/root/main/UI3D/PlanetRotation/PlanetEarth")
 		planet_earth.fade_in()
 		
-		search_button.visible = false
-		exit_button.visible = false
-		
-		discovery_mode_button.visible = true
-		home_mode_button.visible = true
-		
 		discovery_field.visible = false
 		coin_field.visible = true
-		search_area_indicator.visible = false
-		price_label.visible = false
+		
+		ui.exit_discover_ui(true)
 		
 	else:
 			
 		target_position = Vector3(0, 0, 200)
 		
 		#build_button.visible = false
-		exit_button.visible = false
-		search_button.visible = false # tohle je trochu prasárna
 
-		
-		discovery_mode_button.visible = true
-		home_mode_button.visible = true
 		coin_field.visible = true
 		
 		planet_rotation.rotation_speed = 0.2
 		UI3D.rotation_speed = 0.1
-	
+		
 func _process(delta):
 	camera.position = camera.position.lerp(target_position, lerp_speed * delta)
 		
 		
 func _on_SearchButton_pressed():
 	
-	coin_counter.save_coins(-100)
+	ui.save_coins(-100)
 	
 	var pos = get_position_in_camera_view()
 	var coin_node = Area3D.new()

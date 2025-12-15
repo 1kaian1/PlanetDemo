@@ -1,99 +1,20 @@
-[gd_scene load_steps=32 format=4 uid="uid://bst06mnhh6hdq"]
+[gd_scene load_steps=21 format=4 uid="uid://bst06mnhh6hdq"]
 
 [ext_resource type="Script" uid="uid://c0laidvw3sgfg" path="res://scripts/ui_2d.gd" id="1_a8y0u"]
 [ext_resource type="Script" uid="uid://bnu0t0w3pqem7" path="res://scripts/camera_3d.gd" id="1_jkv2x"]
-[ext_resource type="Texture2D" uid="uid://cuhoe03v4lh8a" path="res://textures/coin.png" id="1_ya4ey"]
-[ext_resource type="Script" uid="uid://c4788ngc84x6l" path="res://scripts/coin_counter_autosave.gd" id="3_ya4ey"]
+[ext_resource type="PackedScene" uid="uid://em5npnwx3o4a" path="res://scenes/control.tscn" id="3_trceg"]
 [ext_resource type="Script" uid="uid://dlwqyw74g0ufw" path="res://scripts/ui_3d.gd" id="4_a8y0u"]
-[ext_resource type="Texture2D" uid="uid://dkwe6w280pg1y" path="res://textures/white_circle_empty_fullline.png" id="4_eb6dy"]
 [ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://scripts/planet_rotation.gd" id="7_muem4"]
 [ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
-[ext_resource type="Script" uid="uid://2m6mbdblu402" path="res://scripts/factories.gd" id="8_jkv2x"]
 [ext_resource type="Script" uid="uid://bstjova66tv7n" path="res://scripts/loot_field.gd" id="9_jkv2x"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://scripts/coin_field.gd" id="10_gqmmt"]
 [ext_resource type="Script" uid="uid://kewd8knjg22b" path="res://scripts/planet_earth.gd" id="12_a8y0u"]
 [ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="13_a8y0u"]
-[ext_resource type="Script" uid="uid://bvl3ss1lgwtf5" path="res://scripts/camera_3d_2.gd" id="14_jbj1t"]
 [ext_resource type="Script" uid="uid://cl6ktaxnsg4oo" path="res://scripts/discovery_field.gd" id="15_muem4"]
 
 [sub_resource type="Environment" id="Environment_lquwl"]
 background_mode = 1
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_272bh"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5vw27"]
-bg_color = Color(0.00445516, 0.164744, 0.273023, 1)
-corner_radius_top_left = 50
-corner_radius_top_right = 50
-corner_radius_bottom_right = 50
-corner_radius_bottom_left = 50
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kek77"]
-bg_color = Color(0.00148109, 0.0911035, 0.164115, 1)
-corner_radius_top_left = 50
-corner_radius_top_right = 50
-corner_radius_bottom_right = 50
-corner_radius_bottom_left = 50
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_272bh"]
-bg_color = Color(0.00874711, 0.225232, 0.361061, 1)
-corner_radius_top_left = 50
-corner_radius_top_right = 50
-corner_radius_bottom_right = 50
-corner_radius_bottom_left = 50
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_dg77c"]
-
-[sub_resource type="GDScript" id="GDScript_muem4"]
-script/source = "extends ScrollContainer
-
-var last_touch_pos = null
-
-func _ready():
-	for i in 10:
-		var block = Panel.new()
-		block.custom_minimum_size = Vector2(300, 300)
-		block.add_theme_color_override(\"panel\", Color.RED)
-		
-		var label = Label.new()
-		label.text = \"Blok %d\" % (i + 1)
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-		block.add_child(label)
-		block.mouse_filter = Control.MOUSE_FILTER_PASS  # ⬅️ důležité!
-		$HBoxContainer.add_child(block)
-		
-		# Přidáme klikací chování
-		block.connect(\"gui_input\", Callable(self, \"_on_block_input\").bind(i))
-
-	# Aktivuj zachytávání vstupu
-	set_process_input(true)
-	set_process_unhandled_input(true)
-	
-func _on_block_input(event: InputEvent, index: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		print(\"Kliknuto na blok č. \", index + 1)
-
-
-func _unhandled_input(event):
-	# Dotyk začal
-	if event is InputEventScreenTouch:
-		if event.pressed:
-			last_touch_pos = event.position
-		else:
-			last_touch_pos = null
-
-	# Tažení prstem / touchpadem
-	elif event is InputEventScreenDrag and last_touch_pos != null:
-		scroll_horizontal -= event.relative.x  # Posun horizontálně
-"
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_jbj1t"]
-viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l8ocv"]
 resource_name = "Default OBJ"
@@ -160,167 +81,7 @@ environment = SubResource("Environment_lquwl")
 [node name="UI2D" type="Node3D" parent="."]
 script = ExtResource("1_a8y0u")
 
-[node name="Control" type="Control" parent="UI2D"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="UI2D/Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.85
-anchor_right = 1.0
-anchor_bottom = 0.95
-offset_left = 30.0
-offset_right = -30.0
-offset_bottom = -30.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="GridContainer" type="GridContainer" parent="UI2D/Control/MarginContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 25
-theme_override_constants/v_separation = 25
-columns = 2
-
-[node name="DiscoveryModeButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 50
-theme_override_styles/focus = SubResource("StyleBoxEmpty_272bh")
-theme_override_styles/hover = SubResource("StyleBoxFlat_5vw27")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
-theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
-text = "Discover"
-
-[node name="HomeModeButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 50
-theme_override_styles/focus = SubResource("StyleBoxEmpty_272bh")
-theme_override_styles/hover = SubResource("StyleBoxFlat_5vw27")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
-theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
-text = "Home
-"
-
-[node name="SearchButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 50
-theme_override_styles/focus = SubResource("StyleBoxEmpty_272bh")
-theme_override_styles/hover = SubResource("StyleBoxFlat_5vw27")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
-theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
-text = "Search"
-
-[node name="ExitButton" type="Button" parent="UI2D/Control/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 50
-theme_override_styles/focus = SubResource("StyleBoxEmpty_272bh")
-theme_override_styles/hover = SubResource("StyleBoxFlat_5vw27")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_kek77")
-theme_override_styles/normal = SubResource("StyleBoxFlat_272bh")
-text = "Exit"
-
-[node name="CoinBar" type="HBoxContainer" parent="UI2D/Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.04
-offset_left = 25.0
-offset_top = 25.0
-offset_right = -25.0
-offset_bottom = -25.0
-theme_override_constants/separation = 20
-
-[node name="CoinTexture" type="TextureRect" parent="UI2D/Control/CoinBar"]
-layout_mode = 2
-texture = ExtResource("1_ya4ey")
-expand_mode = 2
-
-[node name="CoinCounter" type="Label" parent="UI2D/Control/CoinBar"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "0"
-script = ExtResource("3_ya4ey")
-
-[node name="DiscoveryMode" type="MarginContainer" parent="UI2D/Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -256.0
-offset_top = -256.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(1.5, 1.5)
-
-[node name="SearchAreaIndicator" type="TextureRect" parent="UI2D/Control/DiscoveryMode"]
-material = SubResource("ShaderMaterial_dg77c")
-layout_mode = 2
-texture = ExtResource("4_eb6dy")
-
-[node name="PriceLabel" type="Label" parent="UI2D/Control/DiscoveryMode/SearchAreaIndicator"]
-layout_mode = 2
-offset_left = 136.0
-offset_top = 221.0
-offset_right = 376.0
-offset_bottom = 290.0
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 50
-text = "-100 coins"
-
-[node name="XXX-Factories" type="Button" parent="UI2D/Control"]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-offset_left = 500.0
-offset_right = 1030.0
-offset_bottom = 500.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 100
-text = "Factories"
-script = ExtResource("8_jkv2x")
-
-[node name="XXX-MoveContainer" type="Node2D" parent="UI2D/Control"]
-visible = false
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="UI2D/Control/XXX-MoveContainer"]
-
-[node name="Control" type="Control" parent="UI2D/Control/XXX-MoveContainer"]
-layout_mode = 3
-anchors_preset = 0
-offset_top = 1700.0
-offset_right = 1080.0
-offset_bottom = 1900.0
-
-[node name="ScrollContainer" type="ScrollContainer" parent="UI2D/Control/XXX-MoveContainer/Control"]
-layout_mode = 0
-offset_right = 1080.0
-offset_bottom = 300.0
-horizontal_scroll_mode = 3
-vertical_scroll_mode = 3
-script = SubResource("GDScript_muem4")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI2D/Control/XXX-MoveContainer/Control/ScrollContainer"]
-layout_mode = 2
-
-[node name="TransparencyFilter" type="Sprite2D" parent="UI2D/Control"]
-modulate = Color(1, 1, 1, 0.388235)
-z_index = -1
-texture = SubResource("ViewportTexture_jbj1t")
-centered = false
+[node name="Control2" parent="UI2D" instance=ExtResource("3_trceg")]
 
 [node name="UI3D" type="Node3D" parent="."]
 script = ExtResource("4_a8y0u")
@@ -363,12 +124,3 @@ draw_pass_1 = SubResource("CylinderMesh_gqmmt")
 [node name="XXX-Axis" type="Node3D" parent="UI3D"]
 visible = false
 script = ExtResource("13_a8y0u")
-
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(1080, 2400)
-
-[node name="Camera3D2" type="Camera3D" parent="SubViewport"]
-visible = false
-current = true
-script = ExtResource("14_jbj1t")

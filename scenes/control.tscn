@@ -1,6 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://em5npnwx3o4a"]
+[gd_scene load_steps=13 format=3 uid="uid://em5npnwx3o4a"]
 
 [ext_resource type="Script" uid="uid://ljgh2oto7sts" path="res://scenes/control.gd" id="1_r67kn"]
+[ext_resource type="Texture2D" uid="uid://cuhoe03v4lh8a" path="res://textures/coin.png" id="2_8n18e"]
+[ext_resource type="Script" uid="uid://c4788ngc84x6l" path="res://scripts/coin_counter_autosave.gd" id="3_tjwpk"]
+[ext_resource type="Texture2D" uid="uid://dkwe6w280pg1y" path="res://textures/white_circle_empty_fullline.png" id="4_lpubu"]
+[ext_resource type="Script" uid="uid://bvl3ss1lgwtf5" path="res://scripts/camera_3d_2.gd" id="5_tjwpk"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5p55f"]
 
@@ -24,6 +28,58 @@ corner_radius_top_left = 50
 corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lt2xq"]
+
+[sub_resource type="GDScript" id="GDScript_1p5nq"]
+script/source = "extends ScrollContainer
+
+var last_touch_pos = null
+
+func _ready():
+	for i in 10:
+		var block = Panel.new()
+		block.custom_minimum_size = Vector2(300, 300)
+		block.add_theme_color_override(\"panel\", Color.RED)
+		
+		var label = Label.new()
+		label.text = \"Blok %d\" % (i + 1)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		block.add_child(label)
+		block.mouse_filter = Control.MOUSE_FILTER_PASS  # ⬅️ důležité!
+		$HBoxContainer.add_child(block)
+		
+		# Přidáme klikací chování
+		block.connect(\"gui_input\", Callable(self, \"_on_block_input\").bind(i))
+
+	# Aktivuj zachytávání vstupu
+	set_process_input(true)
+	set_process_unhandled_input(true)
+	
+func _on_block_input(event: InputEvent, index: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		print(\"Kliknuto na blok č. \", index + 1)
+
+
+func _unhandled_input(event):
+	# Dotyk začal
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			last_touch_pos = event.position
+		else:
+			last_touch_pos = null
+
+	# Tažení prstem / touchpadem
+	elif event is InputEventScreenDrag and last_touch_pos != null:
+		scroll_horizontal -= event.relative.x  # Posun horizontálně
+"
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_hob4j"]
+viewport_path = NodePath("SubViewport")
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -96,3 +152,91 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_r67kn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_brbbq")
 theme_override_styles/normal = SubResource("StyleBoxFlat_8n18e")
 text = "Exit"
+
+[node name="CoinBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.04
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+theme_override_constants/separation = 20
+
+[node name="CoinTexture" type="TextureRect" parent="CoinBar"]
+layout_mode = 2
+texture = ExtResource("2_8n18e")
+expand_mode = 2
+
+[node name="CoinCounter" type="Label" parent="CoinBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "0"
+script = ExtResource("3_tjwpk")
+
+[node name="DiscoveryMode" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -256.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+
+[node name="SearchAreaIndicator" type="TextureRect" parent="DiscoveryMode"]
+material = SubResource("ShaderMaterial_lt2xq")
+layout_mode = 2
+texture = ExtResource("4_lpubu")
+
+[node name="PriceLabel" type="Label" parent="DiscoveryMode/SearchAreaIndicator"]
+layout_mode = 2
+offset_left = 136.0
+offset_top = 221.0
+offset_right = 376.0
+offset_bottom = 290.0
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 50
+text = "-100 coins"
+
+[node name="XXX-MoveContainer" type="Node2D" parent="."]
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="XXX-MoveContainer"]
+
+[node name="Control" type="Control" parent="XXX-MoveContainer"]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 1700.0
+offset_right = 1080.0
+offset_bottom = 1900.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="XXX-MoveContainer/Control"]
+layout_mode = 0
+offset_right = 1080.0
+offset_bottom = 300.0
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+script = SubResource("GDScript_1p5nq")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="XXX-MoveContainer/Control/ScrollContainer"]
+layout_mode = 2
+
+[node name="TransparencyFilter" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.388235)
+z_index = -1
+texture = SubResource("ViewportTexture_hob4j")
+centered = false
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1080, 2400)
+
+[node name="Camera3D2" type="Camera3D" parent="SubViewport"]
+visible = false
+current = true
+script = ExtResource("5_tjwpk")

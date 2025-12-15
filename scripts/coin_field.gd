@@ -6,15 +6,18 @@ extends Node3D
 @export var COIN_COLLISION_FIELD = 100
 
 @onready var camera = get_node("/root/main/Camera3D")
-@onready var coin_counter= get_node("/root/main/UI2D/Control/CoinBar/CoinCounter")
 @onready var spawn_timer = Timer.new()
+
+@onready var ui = get_node("/root/main/UI2D/Control2")
+
 
 var coins_currently_spawned = 0
 var coins_gathered = 0
 
 func _ready():
 		
-	coins_gathered = coin_counter.load_coins()
+	
+	coins_gathered = ui.load_coins()
 	
 	spawn_timer.wait_time = 60.0 / COINS_PER_MINUTE
 
@@ -66,7 +69,7 @@ func _on_coin_clicked(coin_node):
 	
 	coins_currently_spawned -= 1
 	coins_gathered += 1
-	coin_counter.save_coins(1)
+	ui.save_coins(1)
 	
 func get_random_position_on_surface():
 	

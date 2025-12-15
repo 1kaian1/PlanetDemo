@@ -1,37 +1,66 @@
 extends Control
 
-@onready var labels := $CenterContainer/VBoxContainer.get_children()
+signal discovery_mode_pressed
+signal home_mode_pressed
+signal search_pressed
+signal exit_pressed
 
-func _ready():
-	play_intro()
+@onready var DiscoveryModeButton = get_node("MarginContainer/GridContainer/DiscoveryModeButton")
+@onready var HomeModeButton = get_node("MarginContainer/GridContainer/HomeModeButton")
+@onready var SearchButton = get_node("MarginContainer/GridContainer/SearchButton")
+@onready var ExitButton = get_node("MarginContainer/GridContainer/ExitButton")
 
-func play_intro():
-	var tween = create_tween()
+@onready var SearchAreaIndicator = get_node("DiscoveryMode/SearchAreaIndicator")
+@onready var PriceLabel = get_node("DiscoveryMode/SearchAreaIndicator/PriceLabel")
 
-	# 1️⃣ skryj všechna slova
-	for label in labels:
-		label.visible = false
+@onready var coin_counter = get_node("CoinBar/CoinCounter")
 
-	# 2️⃣ postupně je zobraz
-	for label in labels:
-		tween.tween_callback(func():
-			label.visible = true
-		)
-		tween.tween_interval(0.4) # pauza mezi slovy
-
-	# 3️⃣ krátká pauza po zobrazení
-	tween.tween_interval(1.0)
-
-	# 4️⃣ rychle schovej všechna slova
-	tween.tween_callback(func():
-		for label in labels:
-			label.visible = false
+func _ready():	
+	DiscoveryModeButton.pressed.connect(
+		func(): discovery_mode_pressed.emit()
 	)
-
-	# 5️⃣ krátká pauza
-	tween.tween_interval(0.3)
-
-	# 6️⃣ znovu od začátku
-	tween.tween_callback(func():
-		play_intro()
+	HomeModeButton.pressed.connect(
+		func(): home_mode_pressed.emit()
 	)
+	SearchButton.pressed.connect(
+		func(): search_pressed.emit()
+	)
+	ExitButton.pressed.connect(
+		func(): exit_pressed.emit()
+	)
+	
+func set_ready_ui(active: bool):
+	SearchButton.visible = !active
+	ExitButton.visible = !active
+	SearchAreaIndicator.visible = !active
+	PriceLabel.visible = !active
+	
+func set_discovery_ui(active: bool):
+	SearchButton.visible = active
+	ExitButton.visible = active
+	DiscoveryModeButton.visible = !active
+	HomeModeButton.visible = !active
+	SearchAreaIndicator.visible = active
+	PriceLabel.visible = active
+	
+func set_home_ui(active: bool):
+	ExitButton.visible = active
+	HomeModeButton.visible = !active
+	
+func set_exit_ui(active: bool):
+	SearchButton.visible = !active
+	ExitButton.visible = !active
+	DiscoveryModeButton.visible = active
+	HomeModeButton.visible = active
+
+func exit_discover_ui(active: bool):
+	SearchAreaIndicator.visible = !active
+	PriceLabel.visible = !active
+	
+func load_coins():
+	return coin_counter.load_coins()
+	
+func save_coins(number):
+	coin_counter.save_coins(number)
+
+	
