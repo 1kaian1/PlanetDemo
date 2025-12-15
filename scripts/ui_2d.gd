@@ -9,7 +9,7 @@ extends Node3D
 
 @onready var search_area_indicator = get_node("Control/DiscoveryMode/SearchAreaIndicator")
 
-@onready var discovery_field = get_node("/root/main/SubViewport/DiscoveryField")
+@onready var discovery_field = get_node("/root/main/UI3D/DiscoveryField")
 @onready var coin_field = get_node("/root/main/UI3D/PlanetRotation/CoinField")
 @onready var planet_rotation = get_node("/root/main/UI3D/PlanetRotation")
 @onready var UI3D = get_node("/root/main/UI3D")
@@ -17,7 +17,7 @@ extends Node3D
 @onready var camera = get_node("/root/main/Camera3D")
 
 @onready var coin_counter = get_node("/root/main/UI2D/Control/CoinBar/CoinCounter")
-@onready var price_label = get_node("/root/main/UI2D/Control/DiscoveryMode/PriceLabel")
+@onready var price_label = get_node("/root/main/UI2D/Control/DiscoveryMode/SearchAreaIndicator/PriceLabel")
 
 
 
@@ -127,33 +127,34 @@ func _on_SearchButton_pressed():
 	
 	var pos = get_position_in_camera_view()
 	var coin_node = Area3D.new()
-	coin_node.global_position = pos
+	coin_node.position = pos
 	discovery_field.add_child(coin_node)
-	
+	coin_node.look_at(Vector3.ZERO, Vector3.UP)
 
 	var coin_sprite = Sprite3D.new()
 	coin_sprite.texture = load("res://textures/red_circle_full.png")
 	coin_sprite.scale = Vector3.ZERO
 	coin_sprite.layers = 2
-	coin_node.look_at(Vector3.ZERO, Vector3.UP)
+	coin_sprite.set_meta("type", "full")
 	coin_node.add_child(coin_sprite)
 		
 	var coin_sprite2 = Sprite3D.new()
 	coin_sprite2.texture = load("res://textures/red_circle_empty_dotted.png")
-	coin_sprite2.scale = Vector3(13.5, 13.5, 13.5)
+	coin_sprite2.scale = Vector3(28,28,28)
 	coin_sprite2.layers = 2
-	coin_node.look_at(Vector3.ZERO, Vector3.UP)
+	coin_sprite.set_meta("type", "empty")
 	coin_node.add_child(coin_sprite2)
 
 	var tween = create_tween()
-	tween.tween_property(coin_sprite, "scale", Vector3(13.7,13.7,13.7), 5) \
+	tween.tween_property(coin_sprite, "scale", Vector3(13.5,13.5,13.5), 5) \
 		.set_trans(Tween.TRANS_SINE) \
 		.set_ease(Tween.EASE_OUT)
-
-
+	
+		
+		
 func get_position_in_camera_view():
+	
 	var rotation = UI3D.rotation_quat
-
 	var world_direction = (rotation.inverse() * Vector3(0, 0, -1)).normalized()
 
 	var position_on_sphere = world_direction * WINDOW_FIELD_RADIUS

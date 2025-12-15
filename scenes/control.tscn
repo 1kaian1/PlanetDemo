@@ -1,0 +1,98 @@
+[gd_scene load_steps=6 format=3 uid="uid://em5npnwx3o4a"]
+
+[ext_resource type="Script" uid="uid://ljgh2oto7sts" path="res://scenes/control.gd" id="1_r67kn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5p55f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r67kn"]
+bg_color = Color(0.00445516, 0.164744, 0.273023, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_brbbq"]
+bg_color = Color(0.00148109, 0.0911035, 0.164115, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8n18e"]
+bg_color = Color(0.00874711, 0.225232, 0.361061, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_r67kn")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.85
+anchor_right = 1.0
+anchor_bottom = 0.95
+offset_left = 30.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 25
+theme_override_constants/v_separation = 25
+columns = 2
+
+[node name="DiscoveryModeButton" type="Button" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 50
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5p55f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r67kn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_brbbq")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8n18e")
+text = "Discover"
+
+[node name="HomeModeButton" type="Button" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 50
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5p55f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r67kn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_brbbq")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8n18e")
+text = "Home
+"
+
+[node name="SearchButton" type="Button" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 50
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5p55f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r67kn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_brbbq")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8n18e")
+text = "Search"
+
+[node name="ExitButton" type="Button" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 50
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5p55f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r67kn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_brbbq")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8n18e")
+text = "Exit"

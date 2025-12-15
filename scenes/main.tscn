@@ -1,23 +1,21 @@
-[gd_scene load_steps=34 format=4 uid="uid://ec35w7lhfdf2"]
+[gd_scene load_steps=32 format=4 uid="uid://bst06mnhh6hdq"]
 
 [ext_resource type="Script" uid="uid://c0laidvw3sgfg" path="res://scripts/ui_2d.gd" id="1_a8y0u"]
-[ext_resource type="Script" uid="uid://bnu0t0w3pqem7" path="res://scripts/camera_3d.gd" id="1_dp3eg"]
+[ext_resource type="Script" uid="uid://bnu0t0w3pqem7" path="res://scripts/camera_3d.gd" id="1_jkv2x"]
 [ext_resource type="Texture2D" uid="uid://cuhoe03v4lh8a" path="res://textures/coin.png" id="1_ya4ey"]
-[ext_resource type="Shader" uid="uid://b8fh7t7gn54er" path="res://shaders/striped_circle.gdshader" id="2_eb6dy"]
-[ext_resource type="Script" uid="uid://c4788ngc84x6l" path="res://scripts/coin_counter_autosave.gd" id="3_a8y0u"]
+[ext_resource type="Script" uid="uid://c4788ngc84x6l" path="res://scripts/coin_counter_autosave.gd" id="3_ya4ey"]
 [ext_resource type="Script" uid="uid://dlwqyw74g0ufw" path="res://scripts/ui_3d.gd" id="4_a8y0u"]
-[ext_resource type="Texture2D" uid="uid://dkwe6w280pg1y" path="res://textures/white_circle_empty_fullline.png" id="6_0ld40"]
+[ext_resource type="Texture2D" uid="uid://dkwe6w280pg1y" path="res://textures/white_circle_empty_fullline.png" id="4_eb6dy"]
 [ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://scripts/planet_rotation.gd" id="7_muem4"]
 [ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
 [ext_resource type="Script" uid="uid://2m6mbdblu402" path="res://scripts/factories.gd" id="8_jkv2x"]
-[ext_resource type="Script" uid="uid://bstjova66tv7n" path="res://scenes/loot_field.gd" id="10_dp3eg"]
+[ext_resource type="Script" uid="uid://bstjova66tv7n" path="res://scripts/loot_field.gd" id="9_jkv2x"]
 [ext_resource type="Script" uid="uid://cg6wkvkq5ylxd" path="res://scripts/coin_field.gd" id="10_gqmmt"]
 [ext_resource type="Script" uid="uid://kewd8knjg22b" path="res://scripts/planet_earth.gd" id="12_a8y0u"]
 [ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="13_a8y0u"]
-[ext_resource type="Script" uid="uid://cl6ktaxnsg4oo" path="res://scripts/discovery_field.gd" id="17_muem4"]
-[ext_resource type="Script" uid="uid://bvl3ss1lgwtf5" path="res://scripts/camera_3d_2.gd" id="19_0ld40"]
-[ext_resource type="Texture2D" uid="uid://b2cywqdv2g702" path="res://textures/exclamation_mark.png" id="19_gqmmt"]
+[ext_resource type="Script" uid="uid://bvl3ss1lgwtf5" path="res://scripts/camera_3d_2.gd" id="14_jbj1t"]
+[ext_resource type="Script" uid="uid://cl6ktaxnsg4oo" path="res://scripts/discovery_field.gd" id="15_muem4"]
 
 [sub_resource type="Environment" id="Environment_lquwl"]
 background_mode = 1
@@ -46,8 +44,6 @@ corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dg77c"]
-render_priority = 0
-shader = ExtResource("2_eb6dy")
 
 [sub_resource type="GDScript" id="GDScript_muem4"]
 script/source = "extends ScrollContainer
@@ -153,11 +149,10 @@ bottom_radius = 0.0
 
 [node name="main" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("subviewport_camera")]
+[node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
 current = true
-script = ExtResource("1_dp3eg")
-subviewport_camera = NodePath("../SubViewport/Camera3D2")
+script = ExtResource("1_jkv2x")
 
 [node name="World" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lquwl")
@@ -256,7 +251,7 @@ expand_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "0"
-script = ExtResource("3_a8y0u")
+script = ExtResource("3_ya4ey")
 
 [node name="DiscoveryMode" type="MarginContainer" parent="UI2D/Control"]
 layout_mode = 1
@@ -274,10 +269,14 @@ scale = Vector2(1.5, 1.5)
 [node name="SearchAreaIndicator" type="TextureRect" parent="UI2D/Control/DiscoveryMode"]
 material = SubResource("ShaderMaterial_dg77c")
 layout_mode = 2
-texture = ExtResource("6_0ld40")
+texture = ExtResource("4_eb6dy")
 
-[node name="PriceLabel" type="Label" parent="UI2D/Control/DiscoveryMode"]
+[node name="PriceLabel" type="Label" parent="UI2D/Control/DiscoveryMode/SearchAreaIndicator"]
 layout_mode = 2
+offset_left = 136.0
+offset_top = 221.0
+offset_right = 376.0
+offset_bottom = 290.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "-100 coins"
@@ -294,18 +293,19 @@ theme_override_font_sizes/font_size = 100
 text = "Factories"
 script = ExtResource("8_jkv2x")
 
-[node name="MoveContainer" type="Node2D" parent="UI2D/Control"]
+[node name="XXX-MoveContainer" type="Node2D" parent="UI2D/Control"]
+visible = false
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="UI2D/Control/MoveContainer"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI2D/Control/XXX-MoveContainer"]
 
-[node name="Control" type="Control" parent="UI2D/Control/MoveContainer"]
+[node name="Control" type="Control" parent="UI2D/Control/XXX-MoveContainer"]
 layout_mode = 3
 anchors_preset = 0
 offset_top = 1700.0
 offset_right = 1080.0
 offset_bottom = 1900.0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI2D/Control/MoveContainer/Control"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI2D/Control/XXX-MoveContainer/Control"]
 layout_mode = 0
 offset_right = 1080.0
 offset_bottom = 300.0
@@ -313,7 +313,7 @@ horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
 script = SubResource("GDScript_muem4")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI2D/Control/MoveContainer/Control/ScrollContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI2D/Control/XXX-MoveContainer/Control/ScrollContainer"]
 layout_mode = 2
 
 [node name="TransparencyFilter" type="Sprite2D" parent="UI2D/Control"]
@@ -329,7 +329,10 @@ script = ExtResource("4_a8y0u")
 script = ExtResource("7_trceg")
 
 [node name="->LootField" type="Node3D" parent="UI3D"]
-script = ExtResource("10_dp3eg")
+script = ExtResource("9_jkv2x")
+
+[node name="DiscoveryField" type="Node3D" parent="UI3D"]
+script = ExtResource("15_muem4")
 
 [node name="PlanetRotation" type="Node3D" parent="UI3D"]
 script = ExtResource("7_muem4")
@@ -365,15 +368,7 @@ script = ExtResource("13_a8y0u")
 transparent_bg = true
 size = Vector2i(1080, 2400)
 
-[node name="DiscoveryField" type="Node3D" parent="SubViewport"]
-script = ExtResource("17_muem4")
-
 [node name="Camera3D2" type="Camera3D" parent="SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
+visible = false
 current = true
-script = ExtResource("19_0ld40")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(300, 500)
-scale = Vector2(0.05, 0.05)
-texture = ExtResource("19_gqmmt")
+script = ExtResource("14_jbj1t")

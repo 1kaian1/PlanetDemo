@@ -41,11 +41,7 @@ func _input(event):
 			
 			var delta : Vector2 = event.position - last_touch_pos
 			last_touch_pos = event.position
-			
-			
-
-
-			
+		
 			# Vector3.RIGHT = vektor (1, 0, 0) = osa X (doprava).
 			# Tohle říká: vytvoř quaternion, který reprezentuje rotaci kolem
 			# osy X o úhel delta.y * 0.01 radiánů.
