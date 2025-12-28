@@ -1,6 +1,6 @@
 extends Label
 
-@export var save_path = "user://save_file.json"
+var save_path = "user://save_file.json"
 
 func save_coins(number):
 	

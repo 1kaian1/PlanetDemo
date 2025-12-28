@@ -5,7 +5,7 @@ extends Node3D
 @onready var coin_field = get_node("/root/main/PlanetRotation/CoinField")
 @onready var planet_rotation = get_node("/root/main/PlanetRotation")
 @onready var planet_earth = get_node("/root/main/PlanetRotation/PlanetEarth")
-@onready var UI3D = get_node("/root/main")
+@onready var main = get_node("/root/main")
 @onready var camera = get_node("/root/main/Camera3D")
 @onready var ui = get_node("/root/main/DiscoveryUI")
 
@@ -19,11 +19,11 @@ func _process(delta):
 	if camera.position.z < 75:
 		coin_field.visible = false
 		planet_rotation.rotation_speed = 0.0
-		#UI3D.rotation_speed = 0.02
+		#main.rotation_speed = 0.02
 	else:
 		coin_field.visible = true
 		planet_rotation.rotation_speed = 0.2
-		#UI3D.rotation_speed = 0.1
+		#main.rotation_speed = 0.1
 		
 	if camera.position.z < 55:
 		planet_earth.fade_out()
@@ -99,7 +99,7 @@ func _on_SearchButton_pressed():
 	
 func get_position_in_camera_view():
 	
-	var rotation = UI3D.rotation_quat
+	var rotation = main.rotation_quat
 	var world_direction = (rotation.inverse() * Vector3(0, 0, -1)).normalized()
 
 	var position_on_sphere = world_direction * WINDOW_FIELD_RADIUS

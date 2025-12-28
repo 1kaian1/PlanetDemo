@@ -1,7 +1,6 @@
 extends Camera3D
 
-@export var subviewport_camera: Camera3D
-
+var subviewport_camera: Camera3D
 var touches := {}
 var last_distance := -1.0
 var target_zoom

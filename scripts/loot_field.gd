@@ -2,7 +2,6 @@ extends Node3D
 
 @onready var camera: Camera3D = get_node("/root/main/Camera3D")
 @onready var discovery_field: Node3D = get_node("/root/main/DiscoveryField")
-@onready var star_field: Node3D = get_node("/root/main/StarField")
 
 var selected_sprite: Sprite3D = null
 var selected_label: Label3D = null

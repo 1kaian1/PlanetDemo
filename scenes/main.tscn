@@ -86,8 +86,6 @@ script = ExtResource("1_trceg")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lquwl")
 
-[node name="UI3D" type="Node3D" parent="."]
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
 cull_mask = 1048573

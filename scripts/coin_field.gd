@@ -7,7 +7,6 @@ extends Node3D
 
 @onready var camera = get_node("/root/main/Camera3D")
 @onready var spawn_timer = Timer.new()
-
 @onready var ui = get_node("/root/main/DiscoveryUI")
 
 var coins_currently_spawned = 0
