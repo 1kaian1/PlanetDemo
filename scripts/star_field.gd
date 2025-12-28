@@ -1,6 +1,6 @@
 extends Node3D
 
-@export var STAR_FIELD_RADIUS = 500
+@export var STAR_FIELD_RADIUS = 1500
 @export var STAR_COUNT = 500
 
 func _ready():

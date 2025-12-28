@@ -1,0 +1,130 @@
+[gd_scene load_steps=11 format=3 uid="uid://em5npnwx3o4a"]
+
+[ext_resource type="Script" uid="uid://ljgh2oto7sts" path="res://scripts/discovery_ui.gd" id="1_r67kn"]
+[ext_resource type="Texture2D" uid="uid://cuhoe03v4lh8a" path="res://textures/coin.png" id="2_8n18e"]
+[ext_resource type="Script" uid="uid://c4788ngc84x6l" path="res://scripts/coin_counter.gd" id="3_tjwpk"]
+[ext_resource type="Texture2D" uid="uid://dkwe6w280pg1y" path="res://textures/white_circle_empty_fullline.png" id="4_lpubu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5p55f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r67kn"]
+bg_color = Color(0.00445516, 0.164744, 0.273023, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_brbbq"]
+bg_color = Color(0.00148109, 0.0911035, 0.164115, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8n18e"]
+bg_color = Color(0.00874711, 0.225232, 0.361061, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lt2xq"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_hob4j"]
+viewport_path = NodePath("SubViewport")
+
+[node name="DiscoveryUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_r67kn")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.85
+anchor_right = 1.0
+anchor_bottom = 0.95
+offset_left = 30.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SearchButton" type="Button" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 50
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5p55f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r67kn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_brbbq")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8n18e")
+text = "Search"
+
+[node name="CoinBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.04
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+theme_override_constants/separation = 20
+
+[node name="CoinTexture" type="TextureRect" parent="CoinBar"]
+layout_mode = 2
+texture = ExtResource("2_8n18e")
+expand_mode = 2
+
+[node name="CoinCounter" type="Label" parent="CoinBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "0"
+script = ExtResource("3_tjwpk")
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -256.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+
+[node name="SearchAreaIndicator" type="TextureRect" parent="MarginContainer2"]
+material = SubResource("ShaderMaterial_lt2xq")
+layout_mode = 2
+texture = ExtResource("4_lpubu")
+
+[node name="PriceLabel" type="Label" parent="MarginContainer2/SearchAreaIndicator"]
+layout_mode = 2
+offset_left = 136.0
+offset_top = 221.0
+offset_right = 376.0
+offset_bottom = 290.0
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 50
+text = "-100 coins"
+
+[node name="TransparencyFilter" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.388235)
+z_index = -1
+texture = SubResource("ViewportTexture_hob4j")
+centered = false
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1080, 2400)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+cull_mask = 1048574
+current = true

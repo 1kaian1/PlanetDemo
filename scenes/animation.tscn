@@ -1,7 +1,46 @@
 [gd_scene load_steps=3 format=3 uid="uid://cgeh0w3otakm8"]
 
-[ext_resource type="Script" uid="uid://cfrf5uirvjetu" path="res://control.gd" id="1_p5qov"]
 [ext_resource type="FontFile" uid="uid://by8d2inddwd3n" path="res://fonts/OpenSans_Condensed-Bold.ttf" id="2_u0f4s"]
+
+[sub_resource type="GDScript" id="GDScript_p5qov"]
+script/source = "extends Control
+
+@onready var labels := $CenterContainer/VBoxContainer.get_children()
+
+func _ready():
+	play_intro()
+
+func play_intro():
+	var tween = create_tween()
+
+	# 1️⃣ skryj všechna slova
+	for label in labels:
+		label.visible = false
+
+	# 2️⃣ postupně je zobraz
+	for label in labels:
+		tween.tween_callback(func():
+			label.visible = true
+		)
+		tween.tween_interval(0.4) # pauza mezi slovy
+
+	# 3️⃣ krátká pauza po zobrazení
+	tween.tween_interval(1.0)
+
+	# 4️⃣ rychle schovej všechna slova
+	tween.tween_callback(func():
+		for label in labels:
+			label.visible = false
+	)
+
+	# 5️⃣ krátká pauza
+	tween.tween_interval(0.3)
+
+	# 6️⃣ znovu od začátku
+	tween.tween_callback(func():
+		play_intro()
+	)
+"
 
 [node name="Node2D" type="Node2D"]
 
@@ -9,7 +48,7 @@
 custom_minimum_size = Vector2(1080, 2400)
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_p5qov")
+script = SubResource("GDScript_p5qov")
 
 [node name="CenterContainer" type="CenterContainer" parent="Control"]
 custom_minimum_size = Vector2(1080, 0)

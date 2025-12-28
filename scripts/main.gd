@@ -1,24 +1,24 @@
 extends Node3D
 
 var rotation_quat : Quaternion = Quaternion.IDENTITY
-var angle_quat : Quaternion = Quaternion.IDENTITY
 var target_rotation : Quaternion = Quaternion.IDENTITY
 var dragging : bool = false
 var last_touch_pos : Vector2 = Vector2.ZERO
 var active_touches : int = 0
 
 @export var rotation_speed : float = 0.1
-@onready var camera = get_node("/root/main/Camera3D")
-
-var scene_forward : Vector3 = Vector3.BACK
 
 func _process(_delta):
 	rotation_quat = rotation_quat.slerp(target_rotation, rotation_speed)
 	
 	var universal_rotation = rotation_quat.get_euler()
-	for child in get_children():
-		if child is MeshInstance3D or child is Node3D:
-			child.rotation = universal_rotation
+	
+	$PlanetRotation.rotation = universal_rotation
+	$StarField.rotation = universal_rotation
+	$LootField.rotation = universal_rotation
+	$DiscoveryField.rotation = universal_rotation
+	$"XXX-Axis".rotation = universal_rotation
+	$Shield.rotation = universal_rotation
 	
 func _input(event):
 	

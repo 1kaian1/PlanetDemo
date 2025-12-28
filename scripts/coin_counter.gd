@@ -14,7 +14,7 @@ func save_coins(number):
 	
 	text = str(int(coins_gathered))
 	
-func load_coins():	
+func load_coins():
 		
 	if FileAccess.file_exists("user://save_file.json"):
 		

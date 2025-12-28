@@ -1,8 +1,9 @@
-[gd_scene load_steps=23 format=4 uid="uid://bst06mnhh6hdq"]
+[gd_scene load_steps=24 format=4 uid="uid://bst06mnhh6hdq"]
 
 [ext_resource type="Script" uid="uid://bnu0t0w3pqem7" path="res://scripts/camera_3d.gd" id="1_jkv2x"]
-[ext_resource type="Script" uid="uid://fmeifc1kmud8" path="res://scripts/main.gd" id="1_trceg"]
+[ext_resource type="Script" uid="uid://b0wfx3bvxqbhe" path="res://scripts/main.gd" id="1_trceg"]
 [ext_resource type="PackedScene" uid="uid://em5npnwx3o4a" path="res://scenes/discovery_ui.tscn" id="3_trceg"]
+[ext_resource type="Script" uid="uid://dlwqyw74g0ufw" path="res://scripts/ui_3d.gd" id="4_a8y0u"]
 [ext_resource type="Script" uid="uid://d1fnn1rmjj5h4" path="res://scripts/planet_rotation.gd" id="7_muem4"]
 [ext_resource type="Script" uid="uid://dcqw01ph8llit" path="res://scripts/star_field.gd" id="7_trceg"]
 [ext_resource type="Texture2D" uid="uid://c0i5ob7xaipk1" path="res://textures/planet_earth/earth_earth_diff.png" id="8_dp3eg"]
@@ -87,35 +88,29 @@ script = ExtResource("1_trceg")
 environment = SubResource("Environment_lquwl")
 
 [node name="UI3D" type="Node3D" parent="."]
+script = ExtResource("4_a8y0u")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
-cull_mask = 1048573
-current = true
-script = ExtResource("1_jkv2x")
-
-[node name="DiscoveryUI" parent="." instance=ExtResource("3_trceg")]
-
-[node name="StarField" type="Node3D" parent="."]
+[node name="StarField" type="Node3D" parent="UI3D"]
 script = ExtResource("7_trceg")
 
-[node name="LootField" type="Node3D" parent="."]
+[node name="->LootField" type="Node3D" parent="UI3D"]
 script = ExtResource("9_jkv2x")
 
-[node name="DiscoveryField" type="Node3D" parent="."]
+[node name="DiscoveryField" type="Node3D" parent="UI3D"]
 script = ExtResource("15_muem4")
+WINDOW_FIELD_RADIUS = null
 
-[node name="PlanetRotation" type="Node3D" parent="."]
+[node name="PlanetRotation" type="Node3D" parent="UI3D"]
 script = ExtResource("7_muem4")
 
-[node name="PlanetEarth" type="MeshInstance3D" parent="PlanetRotation"]
+[node name="PlanetEarth" type="MeshInstance3D" parent="UI3D/PlanetRotation"]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 rotation_edit_mode = 1
 mesh = SubResource("ArrayMesh_b4p1c")
 skeleton = NodePath("")
 script = ExtResource("12_a8y0u")
 
-[node name="PlanetEarth2" type="MeshInstance3D" parent="PlanetRotation"]
+[node name="PlanetEarth2" type="MeshInstance3D" parent="UI3D/PlanetRotation"]
 transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 200, 0, 0)
 rotation_edit_mode = 1
 visible = false
@@ -123,14 +118,14 @@ mesh = SubResource("ArrayMesh_b4p1c")
 skeleton = NodePath("")
 script = ExtResource("12_a8y0u")
 
-[node name="CoinField" type="Node3D" parent="PlanetRotation"]
+[node name="CoinField" type="Node3D" parent="UI3D/PlanetRotation"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.519363, -1.92509, 0.796524)
 script = ExtResource("10_gqmmt")
 
-[node name="XXX-Explosion" type="Node3D" parent="PlanetRotation"]
+[node name="XXX-Explosion" type="Node3D" parent="UI3D/PlanetRotation"]
 visible = false
 
-[node name="Debris" type="GPUParticles3D" parent="PlanetRotation/XXX-Explosion"]
+[node name="Debris" type="GPUParticles3D" parent="UI3D/PlanetRotation/XXX-Explosion"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 52.7741)
 amount = 24
 lifetime = 0.5
@@ -139,11 +134,20 @@ fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_dp3eg")
 draw_pass_1 = SubResource("CylinderMesh_gqmmt")
 
-[node name="XXX-Axis" type="Node3D" parent="."]
+[node name="XXX-Axis" type="Node3D" parent="UI3D"]
 visible = false
 script = ExtResource("13_a8y0u")
 
-[node name="Shield" type="MeshInstance3D" parent="."]
+[node name="Shield" type="MeshInstance3D" parent="UI3D"]
 transform = Transform3D(115, 0, 0, 0, 115, 0, 0, 0, 115, 0, 0, 0)
 visible = false
 mesh = SubResource("SphereMesh_eb6dy")
+skeleton = NodePath("../..")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
+cull_mask = 1048573
+current = true
+script = ExtResource("1_jkv2x")
+
+[node name="DiscoveryUI" parent="." instance=ExtResource("3_trceg")]

@@ -8,19 +8,17 @@ extends Node3D
 @onready var camera = get_node("/root/main/Camera3D")
 @onready var spawn_timer = Timer.new()
 
-@onready var ui = get_node("/root/main/UI2D/Control2")
-
+@onready var ui = get_node("/root/main/DiscoveryUI")
 
 var coins_currently_spawned = 0
 var coins_gathered = 0
 
 func _ready():
-		
 	
 	coins_gathered = ui.load_coins()
 	
 	spawn_timer.wait_time = 60.0 / COINS_PER_MINUTE
-
+	
 	add_child(spawn_timer)
 	spawn_timer.connect("timeout", Callable(self, "_spawn_coin"))
 	spawn_timer.start()
