@@ -1,14 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://em5npnwx3o4a"]
+[gd_scene load_steps=12 format=3 uid="uid://em5npnwx3o4a"]
 
-[ext_resource type="Script" uid="uid://ljgh2oto7sts" path="res://scripts/discovery_ui.gd" id="1_r67kn"]
+[ext_resource type="Script" uid="uid://detqnqrd0o7oy" path="res://scripts/discovery_ui.gd" id="1_r67kn"]
 [ext_resource type="Texture2D" uid="uid://cuhoe03v4lh8a" path="res://textures/coin.png" id="2_8n18e"]
-[ext_resource type="Script" uid="uid://c4788ngc84x6l" path="res://scripts/coin_counter.gd" id="3_tjwpk"]
+[ext_resource type="Script" uid="uid://bevy54vtxhbod" path="res://scripts/coin_counter.gd" id="3_tjwpk"]
 [ext_resource type="Texture2D" uid="uid://dkwe6w280pg1y" path="res://textures/white_circle_empty_fullline.png" id="4_lpubu"]
+[ext_resource type="Script" uid="uid://dy44437brtpxq" path="res://scripts/sub_viewport.gd" id="5_57p3b"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5p55f"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r67kn"]
-bg_color = Color(0.00445516, 0.164744, 0.273023, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8n18e"]
+bg_color = Color(0.00874711, 0.225232, 0.361061, 1)
 corner_radius_top_left = 50
 corner_radius_top_right = 50
 corner_radius_bottom_right = 50
@@ -21,12 +20,14 @@ corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8n18e"]
-bg_color = Color(0.00874711, 0.225232, 0.361061, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r67kn"]
+bg_color = Color(0.00445516, 0.164744, 0.273023, 1)
 corner_radius_top_left = 50
 corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5p55f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lt2xq"]
 
@@ -45,12 +46,12 @@ script = ExtResource("1_r67kn")
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.85
-anchor_right = 1.0
-anchor_bottom = 0.95
+anchor_right = 0.9
+anchor_bottom = 0.045
 offset_left = 30.0
-offset_right = -30.0
-offset_bottom = -30.0
+offset_top = 918.0
+offset_right = 193.0
+offset_bottom = 987.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -59,10 +60,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 50
-theme_override_styles/focus = SubResource("StyleBoxEmpty_5p55f")
-theme_override_styles/hover = SubResource("StyleBoxFlat_r67kn")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_brbbq")
 theme_override_styles/normal = SubResource("StyleBoxFlat_8n18e")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_brbbq")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r67kn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5p55f")
 text = "Search"
 
 [node name="CoinBar" type="HBoxContainer" parent="."]
@@ -89,16 +90,17 @@ script = ExtResource("3_tjwpk")
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -256.0
 offset_top = -256.0
+offset_right = 256.0
+offset_bottom = 256.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(1.5, 1.5)
 
 [node name="SearchAreaIndicator" type="TextureRect" parent="MarginContainer2"]
 material = SubResource("ShaderMaterial_lt2xq")
@@ -106,11 +108,18 @@ layout_mode = 2
 texture = ExtResource("4_lpubu")
 
 [node name="PriceLabel" type="Label" parent="MarginContainer2/SearchAreaIndicator"]
-layout_mode = 2
-offset_left = 136.0
-offset_top = 221.0
-offset_right = 376.0
-offset_bottom = 290.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -34.500015
+offset_right = 120.0
+offset_bottom = 34.500015
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "-100 coins"
@@ -123,7 +132,7 @@ centered = false
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(1080, 2400)
+script = ExtResource("5_57p3b")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
 cull_mask = 1048574

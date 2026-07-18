@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgrc0msuk52yn"]
+
+[ext_resource type="Script" uid="uid://b0b0ah33xoeqe" path="res://scripts/main_menu.gd" id="1_06t4h"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_06t4h")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -530.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 40
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Start game"
+
+[node name="Button2" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Options"
+
+[node name="Button3" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Exit"
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+canvas_cull_mask = 4294967294

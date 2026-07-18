@@ -2,19 +2,19 @@ extends Node3D
 
 @export var WINDOW_FIELD_RADIUS = 300
 
-@onready var coin_field = get_node("/root/main/PlanetRotation/CoinField")
-@onready var planet_rotation = get_node("/root/main/PlanetRotation")
-@onready var planet_earth = get_node("/root/main/PlanetRotation/PlanetEarth")
-@onready var main = get_node("/root/main")
-@onready var camera = get_node("/root/main/Camera3D")
-@onready var ui = get_node("/root/main/DiscoveryUI")
+@onready var coin_field = get_node("/root/WORLD3D/PlanetRotation/CoinField")
+@onready var planet_rotation = get_node("/root/WORLD3D/PlanetRotation")
+@onready var planet_earth = get_node("/root/WORLD3D/PlanetRotation/PlanetEarth")
+@onready var main = get_node("/root/WORLD3D")
+@onready var camera = get_node("/root/WORLD3D/Camera3D")
+@onready var ui = get_node("/root/WORLD3D/DiscoveryUI")
 
 func _ready():
 	ui.search_pressed.connect(_on_SearchButton_pressed)
 	ui.set_home_ui(true)
 	visible = false
 		
-func _process(delta):
+func _process(_delta):
 	
 	if camera.position.z < 75:
 		coin_field.visible = false
@@ -29,6 +29,9 @@ func _process(delta):
 		planet_earth.fade_out()
 	else:
 		planet_earth.fade_in()
+		
+	#if camera.position.z < 50:
+	#	get_tree().change_scene_to_file("res://scenes/WORLD2D.tscn")
 		
 	if camera.position.z < 20:
 		visible = true
@@ -55,25 +58,23 @@ func _on_SearchButton_pressed():
 	
 	var circle_empty_dotted_sprite = Sprite3D.new()
 	circle_empty_dotted_sprite.texture = load("res://textures/red_circle_empty_dotted.png")
-	circle_empty_dotted_sprite.scale = Vector3(28,28,28)
+	circle_empty_dotted_sprite.scale = Vector3(42,42,42)
 	circle_empty_dotted_sprite.layers = 2
 	circle_empty_dotted_sprite.set_meta("type", "empty")
 	lookup_area.add_child(circle_empty_dotted_sprite)
 	
 	var countdown_label = Label3D.new()
 	countdown_label.text = "00:40"
-	countdown_label.font_size = 2048
+	countdown_label.font_size = 4096
 	countdown_label.modulate = Color.WHITE
 	countdown_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	lookup_area.add_child(countdown_label)
 	
 	var tween = create_tween()
-	tween.tween_property(circle_full_sprite, "scale", Vector3(13.5,13.5,13.5), 40) \
+	tween.tween_property(circle_full_sprite, "scale", Vector3(20.2,20.2,20.2), 40) \
 		 .set_trans(Tween.TRANS_LINEAR) \
 		 .set_ease(Tween.EASE_IN_OUT)
-	
-	var total_seconds = 40
-	var countdown_time = total_seconds
+
 	var countdown_timer = Timer.new()
 	countdown_timer.wait_time = 1
 	countdown_timer.one_shot = false

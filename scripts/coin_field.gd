@@ -5,9 +5,9 @@ extends Node3D
 @export var COIN_FIELD_RADIUS = 50.2
 @export var COIN_COLLISION_FIELD = 100
 
-@onready var camera = get_node("/root/main/Camera3D")
+@onready var camera = get_node("/root/WORLD3D/Camera3D")
 @onready var spawn_timer = Timer.new()
-@onready var ui = get_node("/root/main/DiscoveryUI")
+@onready var ui = get_node("/root/WORLD3D/DiscoveryUI")
 
 var coins_currently_spawned = 0
 var coins_gathered = 0

@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5p3fw8wml2m"]
+
+[ext_resource type="Script" uid="uid://dinnudlci22eg" path="res://scripts/WORLD2D.gd" id="1_8clix"]
+[ext_resource type="Script" uid="uid://bvq62bleboi76" path="res://scripts/axis.gd" id="2_j3hya"]
+[ext_resource type="Script" uid="uid://maril31to6b7" path="res://scripts/return_in_space_button.gd" id="3_j3hya"]
+
+[node name="WORLD2D" type="Node3D"]
+script = ExtResource("1_8clix")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 15, 14.999985)
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 500, 0)
+
+[node name="XXX-Axis" type="Node3D" parent="."]
+script = ExtResource("2_j3hya")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 30.0
+offset_top = 960.0
+scale = Vector2(3, 3)
+text = "Return in space"
+script = ExtResource("3_j3hya")

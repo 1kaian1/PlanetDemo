@@ -10,21 +10,26 @@ config_version=5
 
 [application]
 
-config/name="planet_demo"
+config/name="Planetaria"
 run/main_scene="uid://bst06mnhh6hdq"
-config/features=PackedStringArray("4.4", "Mobile")
+config/features=PackedStringArray("4.5", "Mobile")
 boot_splash/bg_color=Color(0, 0, 0, 1)
-config/icon="res://textures/icon.svg"
+config/icon="uid://v4n3ondm0gqy"
+run/size/window_height_override=1080
+run/size/window_width_override=2400
+
+[autoload]
+
+GameState="*res://scripts/game_state.gd"
 
 [display]
 
-window/size/viewport_width=1080
-window/size/viewport_height=2400
-window/size/window_width_override=1080
-window/size/window_height_override=2400
+window/size/viewport_width=2400
+window/size/viewport_height=1080
+window/size/window_width_override=2400
+window/size/window_height_override=1080
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
-window/handheld/orientation=1
 
 [dotnet]
 
@@ -41,6 +46,5 @@ pointing/emulate_touch_from_mouse=true
 
 [rendering]
 
-renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
