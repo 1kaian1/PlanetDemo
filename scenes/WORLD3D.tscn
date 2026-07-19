@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://bst06mnhh6hdq"]
+[gd_scene load_steps=30 format=4 uid="uid://bst06mnhh6hdq"]
 
 [ext_resource type="Script" uid="uid://bnu0t0w3pqem7" path="res://scripts/camera_3d.gd" id="1_jkv2x"]
 [ext_resource type="Script" uid="uid://fmeifc1kmud8" path="res://scripts/WORLD3D.gd" id="1_trceg"]
@@ -14,7 +14,6 @@
 [ext_resource type="Script" uid="uid://iyokavr0q8fr" path="res://scripts/go_home_button.gd" id="14_22n43"]
 [ext_resource type="Script" uid="uid://b5kfmy61nmv3p" path="res://scripts/mesh_instance_3d_2.gd" id="14_jbj1t"]
 [ext_resource type="Script" uid="uid://cl6ktaxnsg4oo" path="res://scripts/discovery_field.gd" id="15_muem4"]
-[ext_resource type="Script" uid="uid://bhr4kh1ec326q" path="res://addons/cesium_godot/scripts/georeference_camera_controller.gd" id="15_q1im0"]
 
 [sub_resource type="Environment" id="Environment_a8y0u"]
 background_mode = 1
@@ -137,6 +136,7 @@ script = ExtResource("9_jkv2x")
 script = ExtResource("15_muem4")
 
 [node name="PlanetRotation" type="Node3D" parent="."]
+visible = false
 script = ExtResource("7_muem4")
 
 [node name="PlanetEarth" type="MeshInstance3D" parent="PlanetRotation"]
@@ -207,6 +207,7 @@ visible = false
 mesh = SubResource("SphereMesh_eb6dy")
 
 [node name="Control" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -231,20 +232,3 @@ scale = Vector2(3, 3)
 text = "Go home!"
 script = ExtResource("14_22n43")
 camera_path = NodePath("../../Camera3D")
-
-[node name="CesiumGeoreference" type="CesiumGeoreference" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
-visible = false
-
-[node name="Cesium3DTileset" type="Cesium3DTileset" parent="CesiumGeoreference"]
-show_hierarchy = true
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
-
-[node name="@Cesium3DTileset@30113" type="Cesium3DTileset" parent="CesiumGeoreference"]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
-
-[node name="Camera3D2" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
-visible = false
-script = ExtResource("15_q1im0")
-globe_node = NodePath("../CesiumGeoreference")
-tilesets = [NodePath("../CesiumGeoreference/Cesium3DTileset"), NodePath("../CesiumGeoreference/@Cesium3DTileset@30113")]

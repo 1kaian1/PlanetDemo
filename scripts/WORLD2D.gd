@@ -1,3 +1,4 @@
+
 extends Node3D
 
 # ---------------------------------------------------------------------------
@@ -12,7 +13,7 @@ var rig: Node3D                 # "virtuální kamera" – běží na ní stará
 var base_cam_transform: Transform3D
 
 var pivot := Vector3.ZERO
-var offset := Vector3(0,148,0)  # relativní vektor rigu k pivotu
+var offset := Vector3(0, 0, 148)  # PROHOZENO Y -> Z (relativní vektor rigu k pivotu)
 
 var pan_speed := 0.1
 var rotate_speed := 0.005
@@ -48,15 +49,16 @@ func _ready():
 
 	_generate_wrapped_map(MAP_SIZE)
 
-	pivot = Vector3(0, 500, 0)
+	pivot = Vector3(0, 0, 500) # PROHOZENO Y -> Z
 	rig.global_position = pivot + offset
-	rig.look_at(pivot, Vector3.UP)
+	rig.look_at(pivot, Vector3.FORWARD) # Změna UP vektoru na FORWARD (osa Z je teď "nahoru")
 	offset = rig.global_position - pivot
 
 	# Kamera se natrvalo "zaparkuje" na startovní pozici rigu a dál
 	# se s ní už nikdy nehýbe ani netočí.
 	camera.global_transform = rig.global_transform
 	base_cam_transform = camera.global_transform
+
 
 	_draw_bounds()
 	_update_planet_transform()
@@ -112,10 +114,10 @@ func _input(event):
 func _handle_keyboard_pan():
 	var move := Vector3.ZERO
 	var right := rig.global_transform.basis.x
-	right.y = 0
+	right.z = 0 # PROHOZENO Y -> Z
 	right = right.normalized()
-	var forward := rig.global_transform.basis.z
-	forward.y = 0
+	var forward := rig.global_transform.basis.y # PROHOZENO Z -> Y
+	forward.z = 0 # PROHOZENO Y -> Z
 	forward = forward.normalized()
 
 	if Input.is_action_pressed("ui_up"):
@@ -168,14 +170,14 @@ func _zoom(amount: float):
 # ---------------- Pan ----------------
 func _pan(delta: Vector2):
 	var right = rig.global_transform.basis.x
-	right.y = 0
+	right.z = 0 # PROHOZENO Y -> Z
 	right = right.normalized()
 
-	var forward = rig.global_transform.basis.z
-	forward.y = 0
+	var forward = rig.global_transform.basis.y # PROHOZENO Z -> Y
+	forward.z = 0 # PROHOZENO Y -> Z
 	forward = forward.normalized()
 
-	var move = (-delta.x * pan_speed) * right + (-delta.y * pan_speed) * forward
+	var move = (-delta.x * pan_speed) * right + (delta.y * pan_speed) * forward
 
 	pivot += move
 	rig.global_position += move
@@ -217,15 +219,15 @@ func _orbit_with_pitch():
 
 
 func _orbit_rotate(angle_delta: float):
-	offset = offset.rotated(Vector3.UP, angle_delta)
+	offset = offset.rotated(Vector3.FORWARD, angle_delta) # PROHOZENO UP -> FORWARD
 	rig.global_position = pivot + offset
-	rig.look_at(pivot, Vector3.UP)
+	rig.look_at(pivot, Vector3.FORWARD) # PROHOZENO UP -> FORWARD
 
 func _orbit_pitch(delta_y: float):
 	var radius = offset.length()
-	var horizontal_offset = Vector3(offset.x, 0, offset.z)
-	var yaw = atan2(horizontal_offset.x, horizontal_offset.z)
-	var pitch = asin(offset.y / radius)
+	var horizontal_offset = Vector3(offset.x, offset.y, 0) # PROHOZENO z na y
+	var yaw = atan2(horizontal_offset.x, horizontal_offset.y) # PROHOZENO z na y
+	var pitch = asin(offset.z / radius) # PROHOZENO y na z
 
 	pitch += delta_y * pitch_speed
 	var min_p = deg_to_rad(25)
@@ -233,11 +235,11 @@ func _orbit_pitch(delta_y: float):
 	pitch = clamp(pitch, min_p, max_p)
 
 	offset.x = radius * cos(pitch) * sin(yaw)
-	#offset.y = radius * sin(pitch)
-	offset.z = radius * cos(pitch) * cos(yaw)
+	offset.y = radius * cos(pitch) * cos(yaw) # PROHOZENO z na y logiku
+	offset.z = radius * sin(pitch) # PROHOZENO y na z logiku
 
 	rig.global_position = pivot + offset
-	rig.look_at(pivot, Vector3.UP)
+	rig.look_at(pivot, Vector3.FORWARD) # PROHOZENO UP -> FORWARD
 
 func _process(delta):
 
@@ -254,10 +256,10 @@ func _process(delta):
 	elif pivot_pos.x > TILE_SIZE*MAP_SIZE/2:
 		pivot_pos.x -= TILE_SIZE*MAP_SIZE
 
-	if pivot_pos.z < -TILE_SIZE*MAP_SIZE/2:
-		pivot_pos.z += TILE_SIZE*MAP_SIZE
-	elif pivot_pos.z > TILE_SIZE*MAP_SIZE/2:
-		pivot_pos.z -= TILE_SIZE*MAP_SIZE
+	if pivot_pos.y < -TILE_SIZE*MAP_SIZE/2: # PROHOZENO z -> y
+		pivot_pos.y += TILE_SIZE*MAP_SIZE
+	elif pivot_pos.y > TILE_SIZE*MAP_SIZE/2: # PROHOZENO z -> y
+		pivot_pos.y -= TILE_SIZE*MAP_SIZE
 
 	# aplikace wrap posunu na pivot a rig (NE na skutečnou kameru)
 	var delta2: Vector3 = pivot_pos - pivot
@@ -274,6 +276,7 @@ func _update_planet_transform():
 	# kamera. Výsledný obraz je stejný jako v originále, ale
 	# camera.global_transform se nikdy nemění.
 	map_root.global_transform = base_cam_transform * rig.global_transform.affine_inverse()
+	print(camera.position)
 
 
 func _generate_wrapped_map(width: int):
@@ -301,31 +304,31 @@ func _generate_wrapped_map(width: int):
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 	]
 
-	var base_y := 400.0 ## TRIO
+	var base_z := 400.0 ## TRIO - PROHOZENO base_y -> base_z
 
 	for dx in range(-1, 2):
-		for dz in range(-1, 2):
+		for dy in range(-1, 2): # PROHOZENO dz -> dy
 			for i in range(original_map.size()):
 				var tile_type: int = original_map[i]
 				var tile := _create_tile(tile_type)
 
 				var x := i % width
 				@warning_ignore("integer_division")
-				var z := int(i / width)
+				var y := int(i / width) # PROHOZENO z -> y
 
 				var world_x := -(TILE_SIZE*width)/2 + dx*TILE_SIZE*width + x*TILE_SIZE + TILE_SIZE/2
-				var world_z := -(TILE_SIZE*width)/2 + dz*TILE_SIZE*width + z*TILE_SIZE + TILE_SIZE/2
+				var world_y := -(TILE_SIZE*width)/2 + dy*TILE_SIZE*width + y*TILE_SIZE + TILE_SIZE/2 # PROHOZENO z -> y
 
-				tile.position = Vector3(world_x, base_y, world_z)
-				map_root.add_child(tile)   # <-- dlaždice patří planetě, ne rootu
+				tile.position = Vector3(world_x, world_y, base_z) # PROHOZENO Y a Z argumenty
+				map_root.add_child(tile)
 
 # ---------------- Dynamické zaoblení ----------------
 func _update_curvature():
 	var radius := 400.0 ## TRIO
-	var cam_xz := Vector2(camera.global_position.x, camera.global_position.z)
-	var sphere_center := Vector3(camera.global_position.x, 0, camera.global_position.z)
+	var cam_xy := Vector2(camera.global_position.x, camera.global_position.y) # PROHOZENO z -> y
+	var sphere_center := Vector3(camera.global_position.x, camera.global_position.y, 0) # PROHOZENO z a y místa
 
-	for tile_parent in map_root.get_children():   # <-- iterujeme jen dlaždice planety
+	for tile_parent in map_root.get_children():
 		if not tile_parent is Node3D:
 			continue
 
@@ -334,21 +337,21 @@ func _update_curvature():
 			continue
 
 		# ---------- výška ----------
-		var tile_xz := Vector2(plane.global_position.x, plane.global_position.z)
-		var dist := tile_xz.distance_to(cam_xz)
+		var tile_xy := Vector2(plane.global_position.x, plane.global_position.y) # PROHOZENO z -> y
+		var dist := tile_xy.distance_to(cam_xy)
 
 		if dist < TILE_SIZE * 0.5:
-			plane.position.y = 0.0
+			plane.position.z = 0.0 # PROHOZENO y -> z
 		elif dist < radius:
-			plane.position.y = -(radius - sqrt(radius * radius - dist * dist))
+			plane.position.z = -(radius - sqrt(radius * radius - dist * dist)) # PROHOZENO y -> z
 		else:
-			plane.position.y = -radius
+			plane.position.z = -radius # PROHOZENO y -> z
 
 		# ---------- normála ----------
 		var world_pos := Vector3(plane.global_position)
 		var normal := (world_pos - sphere_center).normalized()
 
-		var tangent := normal.cross(Vector3.FORWARD)
+		var tangent := normal.cross(Vector3.UP) # Změna směru kvůli přehození os (FORWARD -> UP)
 		if tangent.length() < 0.001:
 			tangent = normal.cross(Vector3.RIGHT)
 
@@ -357,7 +360,7 @@ func _update_curvature():
 
 		var basis := Basis(
 			tangent,
-			normal,
+			normal, # PROHOZENO normal a bitangent pořadí pro zachování ortonormality při swapu os
 			bitangent
 		)
 
@@ -368,7 +371,7 @@ func _update_curvature():
 		if hotel:
 			hotel.global_transform.basis = basis
 			hotel.scale = Vector3(0.7, 0.7, 0.7)
-			hotel.position.y = plane.position.y + 0.1
+			hotel.position.z = plane.position.z + 0.1 # PROHOZENO y -> z
 
 func _create_tile(tile_type: int) -> Node3D:
 	var tile_parent := Node3D.new()
@@ -377,6 +380,8 @@ func _create_tile(tile_type: int) -> Node3D:
 	tile.name = "Plane"
 	var mesh := PlaneMesh.new()
 	mesh.size = Vector2(TILE_SIZE, TILE_SIZE)
+	# PlaneMesh se standardně generuje v rovině XZ. Chcete-li, aby nativně ležel v XY, 
+	# můžete mu v editoru změnit orientaci, ale skript ho níže stejně přerotuje pomocí basis.
 	tile.mesh = mesh
 
 	var mat := StandardMaterial3D.new()
@@ -410,7 +415,7 @@ func _draw_bounds():
 	var line_height := 5.0
 	var thickness := 1.0
 
-	var base_y := 400.0 + line_height
+	var base_z := 400.0 + line_height # PROHOZENO base_y -> base_z
 	var half_size := MAP_SIZE * TILE_SIZE * 0.5
 
 	var min_pos := -half_size
@@ -418,27 +423,27 @@ func _draw_bounds():
 
 	# 2 linie podél X
 	map_root.add_child(create_line(
-		Vector3(min_pos, base_y, min_pos),
-		Vector3(max_pos, base_y, min_pos),
+		Vector3(min_pos, min_pos, base_z), # PROHOZENO Y a Z souřadnice
+		Vector3(max_pos, min_pos, base_z),
 		thickness
 	))  # přední
 
 	map_root.add_child(create_line(
-		Vector3(min_pos, base_y, max_pos),
-		Vector3(max_pos, base_y, max_pos),
+		Vector3(min_pos, max_pos, base_z), # PROHOZENO Y a Z souřadnice
+		Vector3(max_pos, max_pos, base_z),
 		thickness
 	))  # zadní
 
-	# 2 linie podél Z
+	# 2 linie podél Y (původně Z)
 	map_root.add_child(create_line(
-		Vector3(min_pos, base_y, min_pos),
-		Vector3(min_pos, base_y, max_pos),
+		Vector3(min_pos, min_pos, base_z), # PROHOZENO Y a Z souřadnice
+		Vector3(min_pos, max_pos, base_z),
 		thickness
 	))  # levá
 
 	map_root.add_child(create_line(
-		Vector3(max_pos, base_y, min_pos),
-		Vector3(max_pos, base_y, max_pos),
+		Vector3(max_pos, min_pos, base_z), # PROHOZENO Y a Z souřadnice
+		Vector3(max_pos, max_pos, base_z),
 		thickness
 	))  # pravá
 
@@ -449,12 +454,12 @@ func create_line(start: Vector3, end: Vector3, thickness: float = 0.2) -> MeshIn
 	var mesh := BoxMesh.new()
 
 	var size_x: float = abs(dir.x)
-	var size_z: float = abs(dir.z)
+	var size_y: float = abs(dir.y) # PROHOZENO z -> y
 
 	mesh.size = Vector3(
 		max(size_x, 0.01),
-		thickness,
-		max(size_z, 0.01)
+		max(size_y, 0.01), # PROHOZENO tloušťka a rozměr
+		thickness
 	)
 
 	var mat := StandardMaterial3D.new()
@@ -466,6 +471,6 @@ func create_line(start: Vector3, end: Vector3, thickness: float = 0.2) -> MeshIn
 	var line := MeshInstance3D.new()
 	line.mesh = mesh
 	line.material_override = mat
-	line.position = mid   # lokální pozice v rámci map_root (dřív global_position vůči rootu, teď stejný efekt)
+	line.position = mid
 
 	return line
