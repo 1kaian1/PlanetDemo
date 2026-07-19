@@ -1,8 +1,18 @@
 extends Node3D
 
-var camera: Camera3D
+# ---------------------------------------------------------------------------
+# KAMERA JE OD _ready() STATICKÁ. Veškerý "pohyb kamery" se ve skutečnosti
+# počítá na neviditelném pomocném uzlu `rig` a promítá se jako OPAČNÁ
+# transformace na `map_root` (planetu). Vizuálně je výsledek identický
+# s původním řešením, ale reálná Camera3D se nikdy nehne.
+# ---------------------------------------------------------------------------
+
+var camera: Camera3D            # reálná kamera – po _ready() se už nehýbe
+var rig: Node3D                 # "virtuální kamera" – běží na ní stará logika
+var base_cam_transform: Transform3D
+
 var pivot := Vector3.ZERO
-var offset := Vector3(0,148,0)  # relativní vektor kamery k pivotu
+var offset := Vector3(0,148,0)  # relativní vektor rigu k pivotu
 
 var pan_speed := 0.1
 var rotate_speed := 0.005
@@ -16,7 +26,7 @@ var touches := {}
 var last_dist := 0.0
 var last_angle := 0.0
 var last_pos := {}
-var prev_pos := {} 
+var prev_pos := {}
 
 const TILE_SIZE := 20.0
 const MAP_SIZE := 20
@@ -32,18 +42,28 @@ func _ready():
 	map_root.name = "MapRoot"
 	add_child(map_root)
 
+	rig = Node3D.new()
+	rig.name = "OrbitRig"
+	add_child(rig)
+
 	_generate_wrapped_map(MAP_SIZE)
 
 	pivot = Vector3(0, 500, 0)
-	camera.global_position = pivot + offset
-	camera.look_at(pivot, Vector3.UP)
-	offset = camera.global_position - pivot
+	rig.global_position = pivot + offset
+	rig.look_at(pivot, Vector3.UP)
+	offset = rig.global_position - pivot
+
+	# Kamera se natrvalo "zaparkuje" na startovní pozici rigu a dál
+	# se s ní už nikdy nehýbe ani netočí.
+	camera.global_transform = rig.global_transform
+	base_cam_transform = camera.global_transform
 
 	_draw_bounds()
-	
-	
+	_update_planet_transform()
+
+
 func _input(event):
-	
+
 	# -------- TOUCH (mobil) --------
 	if event is InputEventScreenTouch:
 		if event.pressed:
@@ -78,10 +98,10 @@ func _input(event):
 
 		if left and right:
 			_orbit_pitch(delta.y)
-			
+
 		elif left:
 			_pan(delta)
-			
+
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			_handle_mouse_zoom(-1)
@@ -89,30 +109,28 @@ func _input(event):
 			_handle_mouse_zoom(1)
 
 
-
-
 func _handle_keyboard_pan():
 	var move := Vector3.ZERO
-	var right := camera.global_transform.basis.x
+	var right := rig.global_transform.basis.x
 	right.y = 0
 	right = right.normalized()
-	var forward := camera.global_transform.basis.z
+	var forward := rig.global_transform.basis.z
 	forward.y = 0
 	forward = forward.normalized()
 
-	if Input.is_action_pressed("ui_up"):    # šipka nahoru / W
-		move -= forward * pan_speed * 10  # násobíme, aby byla rychlejší
-	if Input.is_action_pressed("ui_down"):  # šipka dolů / S
+	if Input.is_action_pressed("ui_up"):
+		move -= forward * pan_speed * 10
+	if Input.is_action_pressed("ui_down"):
 		move += forward * pan_speed * 10
-	if Input.is_action_pressed("ui_left"):  # šipka doleva / A
+	if Input.is_action_pressed("ui_left"):
 		move -= right * pan_speed * 10
-	if Input.is_action_pressed("ui_right"): # šipka doprava / D
+	if Input.is_action_pressed("ui_right"):
 		move += right * pan_speed * 10
 
 	if move != Vector3.ZERO:
 		pivot += move
-		camera.global_position += move
-		offset = camera.global_position - pivot
+		rig.global_position += move
+		offset = rig.global_position - pivot
 
 func _handle_keyboard_rotate(delta):
 	var rot := 0.0
@@ -124,7 +142,7 @@ func _handle_keyboard_rotate(delta):
 
 	if rot != 0.0:
 		_orbit_rotate(rot)
-		
+
 func _handle_mouse_zoom(direction: float):
 	var dir := offset.normalized()
 	var distance := offset.length()
@@ -136,32 +154,32 @@ func _handle_mouse_zoom(direction: float):
 	)
 
 	offset = dir * distance
-	camera.global_position = pivot + offset
+	rig.global_position = pivot + offset
 
-	
+
 # ---------------- Zoom ----------------
 func _zoom(amount: float):
 	var dir = offset.normalized()
 	var dist = offset.length()
 	dist = clamp(dist - amount * zoom_speed, 10.0, 150.0)
 	offset = dir * dist
-	camera.global_position = pivot + offset
+	rig.global_position = pivot + offset
 
 # ---------------- Pan ----------------
 func _pan(delta: Vector2):
-	var right = camera.global_transform.basis.x
+	var right = rig.global_transform.basis.x
 	right.y = 0
 	right = right.normalized()
 
-	var forward = camera.global_transform.basis.z
+	var forward = rig.global_transform.basis.z
 	forward.y = 0
 	forward = forward.normalized()
 
 	var move = (-delta.x * pan_speed) * right + (-delta.y * pan_speed) * forward
 
 	pivot += move
-	camera.global_position += move
-	offset = camera.global_position - pivot
+	rig.global_position += move
+	offset = rig.global_position - pivot
 
 # ---------------- Orbit & Pitch ----------------
 func _orbit_with_pitch():
@@ -200,8 +218,8 @@ func _orbit_with_pitch():
 
 func _orbit_rotate(angle_delta: float):
 	offset = offset.rotated(Vector3.UP, angle_delta)
-	camera.global_position = pivot + offset
-	camera.look_at(pivot, Vector3.UP)
+	rig.global_position = pivot + offset
+	rig.look_at(pivot, Vector3.UP)
 
 func _orbit_pitch(delta_y: float):
 	var radius = offset.length()
@@ -215,14 +233,14 @@ func _orbit_pitch(delta_y: float):
 	pitch = clamp(pitch, min_p, max_p)
 
 	offset.x = radius * cos(pitch) * sin(yaw)
-	#offset.y = radius * sfin(pitch)
+	#offset.y = radius * sin(pitch)
 	offset.z = radius * cos(pitch) * cos(yaw)
 
-	camera.global_position = pivot + offset
-	camera.look_at(pivot, Vector3.UP)
+	rig.global_position = pivot + offset
+	rig.look_at(pivot, Vector3.UP)
 
 func _process(delta):
-	
+
 	_handle_keyboard_pan()
 	_handle_keyboard_rotate(delta)
 
@@ -241,16 +259,25 @@ func _process(delta):
 	elif pivot_pos.z > TILE_SIZE*MAP_SIZE/2:
 		pivot_pos.z -= TILE_SIZE*MAP_SIZE
 
-	# aplikace posunu na pivot a kameru
+	# aplikace wrap posunu na pivot a rig (NE na skutečnou kameru)
 	var delta2: Vector3 = pivot_pos - pivot
 	pivot = pivot_pos
-	camera.global_position += delta2
+	rig.global_position += delta2
 
+	_update_planet_transform()
 	_update_curvature()
-	
-	
+
+
+# ---------------- Tady se "prohazuje" kamera s planetou ----------------
+func _update_planet_transform():
+	# map_root dostane přesně opačnou transformaci, jakou by jinak dostala
+	# kamera. Výsledný obraz je stejný jako v originále, ale
+	# camera.global_transform se nikdy nemění.
+	map_root.global_transform = base_cam_transform * rig.global_transform.affine_inverse()
+
+
 func _generate_wrapped_map(width: int):
-	
+
 	var original_map: Array[int] = [
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -273,7 +300,7 @@ func _generate_wrapped_map(width: int):
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 	]
-	
+
 	var base_y := 400.0 ## TRIO
 
 	for dx in range(-1, 2):
@@ -285,20 +312,20 @@ func _generate_wrapped_map(width: int):
 				var x := i % width
 				@warning_ignore("integer_division")
 				var z := int(i / width)
-				
+
 				var world_x := -(TILE_SIZE*width)/2 + dx*TILE_SIZE*width + x*TILE_SIZE + TILE_SIZE/2
 				var world_z := -(TILE_SIZE*width)/2 + dz*TILE_SIZE*width + z*TILE_SIZE + TILE_SIZE/2
 
 				tile.position = Vector3(world_x, base_y, world_z)
-				add_child(tile)
+				map_root.add_child(tile)   # <-- dlaždice patří planetě, ne rootu
 
 # ---------------- Dynamické zaoblení ----------------
 func _update_curvature():
 	var radius := 400.0 ## TRIO
 	var cam_xz := Vector2(camera.global_position.x, camera.global_position.z)
-	var sphere_center := Vector3(camera.global_position.x,0,camera.global_position.z)
+	var sphere_center := Vector3(camera.global_position.x, 0, camera.global_position.z)
 
-	for tile_parent in get_children():
+	for tile_parent in map_root.get_children():   # <-- iterujeme jen dlaždice planety
 		if not tile_parent is Node3D:
 			continue
 
@@ -390,26 +417,26 @@ func _draw_bounds():
 	var max_pos :=  half_size
 
 	# 2 linie podél X
-	add_child(create_line(
+	map_root.add_child(create_line(
 		Vector3(min_pos, base_y, min_pos),
 		Vector3(max_pos, base_y, min_pos),
 		thickness
 	))  # přední
 
-	add_child(create_line(
+	map_root.add_child(create_line(
 		Vector3(min_pos, base_y, max_pos),
 		Vector3(max_pos, base_y, max_pos),
 		thickness
 	))  # zadní
 
 	# 2 linie podél Z
-	add_child(create_line(
+	map_root.add_child(create_line(
 		Vector3(min_pos, base_y, min_pos),
 		Vector3(min_pos, base_y, max_pos),
 		thickness
 	))  # levá
 
-	add_child(create_line(
+	map_root.add_child(create_line(
 		Vector3(max_pos, base_y, min_pos),
 		Vector3(max_pos, base_y, max_pos),
 		thickness
@@ -439,6 +466,6 @@ func create_line(start: Vector3, end: Vector3, thickness: float = 0.2) -> MeshIn
 	var line := MeshInstance3D.new()
 	line.mesh = mesh
 	line.material_override = mat
-	line.global_position = mid
+	line.position = mid   # lokální pozice v rámci map_root (dřív global_position vůči rootu, teď stejný efekt)
 
 	return line

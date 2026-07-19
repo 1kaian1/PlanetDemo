@@ -1,6 +1,6 @@
 extends SubViewport
 
-@onready var label: Label = $CanvasLayer/Label
+#@onready var label: Label = $CanvasLayer/Label
 
 func _ready():
 	await get_tree().process_frame

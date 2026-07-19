@@ -40,6 +40,10 @@ project/assembly_name="planet_demo"
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/cesium_godot/plugin.cfg")
+
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
