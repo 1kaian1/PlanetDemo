@@ -120,7 +120,7 @@ script = ExtResource("1_trceg")
 environment = SubResource("Environment_a8y0u")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 200)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 600)
 cull_mask = 1048573
 script = ExtResource("1_jkv2x")
 

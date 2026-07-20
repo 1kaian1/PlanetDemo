@@ -6,7 +6,7 @@ var last_distance := -1.0
 var target_zoom
 var current_zoom
 var min_zoom := 0.0
-var max_zoom := 300.0
+var max_zoom := 600.0
 var zoom_speed := 0.4
 var zoom_smooth := 6.0
 

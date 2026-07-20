@@ -32,7 +32,10 @@
     session id: 2
     is_accelerated: 0
 
-> Initializing Thread Pool with the following configuration:
-    physical processors (detected): 6
-    num threads: 5
+> Creating View with the following configuration:
+    width: 1
+    height: 1
+    device scale: 1
+    session id: 2
+    is_accelerated: 0
 
